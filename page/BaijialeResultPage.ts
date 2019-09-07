@@ -9,7 +9,8 @@ module gamebaijiale.page {
 			super(v, onOpenFunc, onCloseFunc);
 			this._asset = [
 				Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong+ "general/effect/bigwin.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/bigwin.atlas",
 			];
 		}
 
@@ -22,7 +23,7 @@ module gamebaijiale.page {
 		// 页面打开时执行函数
 		protected onOpen(): void {
 			super.onOpen();
-			this._viewUI.img_result.skin = StringU.substitute(Path_game_baijiale.ui_baijiale +  "winTxt{0}.png", this.dataSource);
+			this._viewUI.img_result.skin = StringU.substitute(Path_game_baijiale.ui_baijiale + "winTxt{0}.png", this.dataSource);
 			this._viewUI.ani1.on(LEvent.COMPLETE, this, this.onPlayComplte);
 			this._viewUI.ani1.play(0, false);
 		}
@@ -33,8 +34,7 @@ module gamebaijiale.page {
 
 		public close(): void {
 			if (this._viewUI) {
-				if(this._viewUI.ani1)
-				{
+				if (this._viewUI.ani1) {
 					this._viewUI.ani1.off(LEvent.COMPLETE, this, this.onPlayComplte);
 				}
 			}
