@@ -26,11 +26,7 @@ module gamebaijiale.page {
 		static myinit(str: string) {
 			super.myinit(str);
 			BaijialeClip.init();
-			if (WebConfig.baseplatform == PageDef.BASE_PLATFORM_TYPE_NQP) {
-				PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE] = BaijialePage;
-			} else {
-				PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE] = BaijialePageOld;
-			}
+			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE] = BaijialePage;
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_MAP] = BaijialeMapPage;
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_BEGIN] = BaijialeBeginPage;
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_RULE] = BaijialeRulePage;
