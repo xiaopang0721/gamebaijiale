@@ -3,7 +3,7 @@
 */
 module gamebaijiale.page{
 	export class BaijialeEndPage extends game.gui.base.Page {
-		private _viewUI: ui.game_ui.baijiale.StopUI;
+		private _viewUI: ui.nqp.game_ui.baijiale.StopUI;
 		
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);

@@ -5,7 +5,7 @@ module gamebaijiale.page {
 	const STATUS_CONFIG = ["准备中", "游戏开始", "发牌中", "下注中", "开牌中", "补牌中", "结算中", "显示结算", "准备中"];
 	export class BaijialePageOld extends game.gui.base.Page {
 
-		private _viewUI: ui.game_ui.baijiale.BaiJiaLe_HUDUI;
+		private _viewUI: ui.nqp.game_ui.baijiale.BaiJiaLe_HUDUI;
 		private _player: any;
 		private _playerInfo: any;
 		private _listState: any;

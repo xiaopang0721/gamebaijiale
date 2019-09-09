@@ -37,7 +37,7 @@ module gamebaijiale.page {
             "144": [100000, 20000, 50000],    //富豪(上庄限制，入座限制，投注限额)
         };
 
-        private _viewUI: ui.game_ui.baijiale.BaiJiaLeUI;
+        private _viewUI: ui.nqp.game_ui.baijiale.BaiJiaLeUI;
         private _baijialeMgr: BaijialeMgr;
         private _baijialeStory: BaijialeStory;
         private _baijialeMapInfo: BaijialeMapInfo;
@@ -1324,12 +1324,12 @@ module gamebaijiale.page {
                 let unitIndex = this._unitSeated[i][0];
                 let unit = this._game.sceneObjectMgr.getUnitByIdx(unitIndex);
                 if (unit) {
-                    (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).txt_name.text = getMainPlayerName(unit.GetName());
-                    (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).txt_money.text = EnumToString.getPointBackNum(unit.GetMoney(), 2).toString();
-                    (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).txt_name.fontSize = 15;
+                    (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).txt_name.text = getMainPlayerName(unit.GetName());
+                    (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).txt_money.text = EnumToString.getPointBackNum(unit.GetMoney(), 2).toString();
+                    (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).txt_name.fontSize = 15;
                     let unitHeadImg = unit.GetHeadImg();
                     if (unitHeadImg) {
-                        (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).img_icon.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + unitHeadImg + ".png";
+                        (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).img_icon.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + unitHeadImg + ".png";
                     }
                     this._seatUIList[i].img_txk.visible = unit.GetVipLevel() > 0;
                     if (this._seatUIList[i].img_txk.visible) {
@@ -1348,24 +1348,24 @@ module gamebaijiale.page {
                                 this._seatUIList[i].img_qifu.visible = true;
                                 if (unit.GetQiFuType()) {
                                     let qifuImgUrl = this._nameStrInfo[unit.GetQiFuType() - 1];
-                                    (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).img_icon.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + qifuImgUrl + ".png";
+                                    (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).img_icon.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + qifuImgUrl + ".png";
                                 }
                             })
                         } else {
                             this._seatUIList[i].img_qifu.visible = true;
                             if (unit.GetQiFuType()) {
                                 let qifuImgUrl = this._nameStrInfo[unit.GetQiFuType() - 1];
-                                (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).img_icon.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + qifuImgUrl + ".png";
+                                (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).img_icon.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + qifuImgUrl + ".png";
                             }
                         }
                     } else {
                         this._seatUIList[i].img_qifu.visible = false;
                     }
                 } else {
-                    (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).txt_name.text = "";
-                    (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).txt_money.text = "点击入座";
-                    (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).txt_name.fontSize = 20;
-                    (this._seatUIList[i] as ui.game_ui.baijiale.component.TouXiangWzUI).img_icon.skin = PathGameTongyong.ui_tongyong_general + "tu_weizi.png";
+                    (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).txt_name.text = "";
+                    (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).txt_money.text = "点击入座";
+                    (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).txt_name.fontSize = 20;
+                    (this._seatUIList[i] as ui.nqp.game_ui.baijiale.component.TouXiangWzUI).img_icon.skin = PathGameTongyong.ui_tongyong_general + "tu_weizi.png";
                     this._seatUIList[i].img_qifu.visible = false;
                     this._seatUIList[i].qifu_type.visible = false;
                     this._seatUIList[i].img_txk.visible = false;
@@ -1610,7 +1610,7 @@ module gamebaijiale.page {
             super.close();
         }
     }
-    class MapRecordRender extends ui.game_ui.baijiale.component.RecordRenderUI {
+    class MapRecordRender extends ui.nqp.game_ui.baijiale.component.RecordRenderUI {
         private _game: Game;
         private _data: any;
         constructor() {

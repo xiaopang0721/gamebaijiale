@@ -3,7 +3,7 @@
 */
 module gamebaijiale.page {
 	export class BaijialeRoadPage extends game.gui.base.Page {
-		private _viewUI: ui.game_ui.baijiale.ZouShiTuUI;
+		private _viewUI: ui.nqp.game_ui.baijiale.ZouShiTuUI;
 		private _isShenQing: boolean = false;
 		private _mapinfo: BaijialeMapInfo;
 		private _gridEditor: GridEditor;
@@ -122,7 +122,7 @@ module gamebaijiale.page {
 			super.close();
 		}
 	}
-	class MapRecordRender extends ui.game_ui.baijiale.component.RecordRenderUI {
+	class MapRecordRender extends ui.nqp.game_ui.baijiale.component.RecordRenderUI {
 		private _game: Game;
 		private _data: any;
 		constructor() {
