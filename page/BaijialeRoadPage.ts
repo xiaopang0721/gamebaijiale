@@ -36,10 +36,10 @@ module gamebaijiale.page {
 				"8": PathGameTongyong.ui_tongyong_general + "plsz_8.png",
 				"9": PathGameTongyong.ui_tongyong_general + "plsz_9.png",
 			}
-			this._gridEditor = new GridEditor(36.8, 34.3, 20, 6, textureTypes, false)
+			this._gridEditor = new GridEditor(36.7, 40, 20, 6, textureTypes, false)
             this._gridEditor.x = 1.5;
             this._gridEditor.y = -0.5;
-			this._viewUI.list_record.parent.addChild(this._gridEditor);
+			this._viewUI.box_road.addChild(this._gridEditor);
 
 			this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_ROAD_RECORD, this, this.onUpdateRoadInfo);
 			this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_GAME_RECORD, this, this.onUpdateRecord);
