@@ -10,18 +10,18 @@ module gamebaijiale.page {
 		static PAGE_BAIJIALE_MAP: string = "2";
 		//百家乐开始下注界面
 		static PAGE_BAIJIALE_BEGIN: string = "3";
+		//百家乐游戏VS界面
+		static PAGE_BAIJIALE_VS: string = "4";
+		//百家乐玩家列表界面
+		static PAGE_BAIJIALE_PLAYER_LIST: string = "5";
+		//百家乐停止下注界面
+		static PAGE_BAIJIALE_END: string = "6";
+		//百家乐大路界面
+		static PAGE_BAIJIALE_ROAD: string = "7";
+		//百家乐结果界面
+		static PAGE_BAIJIALE_RESULT: string = "8";
 		//百家乐游戏规则界面
 		static PAGE_BAIJIALE_RULE: string = "101";
-		//百家乐游戏VS界面
-		static PAGE_BAIJIALE_VS: string = "6";
-		//百家乐玩家列表界面
-		static PAGE_BAIJIALE_PLAYER_LIST: string = "10";
-		//百家乐停止下注界面
-		static PAGE_BAIJIALE_END: string = "11";
-		//百家乐大路界面
-		static PAGE_BAIJIALE_ROAD: string = "13";
-		//百家乐结果界面
-		static PAGE_BAIJIALE_RESULT: string = "14";
 
 		static myinit(str: string) {
 			super.myinit(str);
