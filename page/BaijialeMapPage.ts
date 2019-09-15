@@ -859,8 +859,7 @@ module gamebaijiale.page {
                     break;
                 case MAP_STATUS.PLAY_STATUS_PUSH_CARD:// 发牌阶段
                     this._viewUI.txt_status.index = 4;
-                    // this._viewUI.ani_deal.visible = true;
-                    // this._viewUI.ani_deal.ani1.play(0, true);
+                    this._viewUI.paixieRight.ani2.play(0, true);
                     break;
                 case MAP_STATUS.PLAY_STATUS_BET:// 下注阶段
                     if (this._baijialeMgr.isReConnect && Math.floor(this._baijialeMapInfo.GetCountDown() - this._game.sync.serverTimeBys) < 13) {
@@ -1444,7 +1443,7 @@ module gamebaijiale.page {
             this._viewUI.txt_id.visible = false;
             this._viewUI.box_time.visible = false;
             this._viewUI.xipai.visible = false;
-            this._viewUI.paixieRight.ani_chupai.stop();
+            this._viewUI.paixieRight.ani_chupai.gotoAndStop(12);
             this._viewUI.paixieRight.ani2.gotoAndStop(0);
             this._viewUI.box_road.visible = false;
             this._viewUI.box_xian.visible = false;

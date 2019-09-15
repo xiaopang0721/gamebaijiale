@@ -139,7 +139,7 @@ module gamebaijiale.manager {
 		//发牌
 		fapai() {
 			let count = 0;
-			// let counter = 0;
+			let counter = 0;
 			for (let index = 0; index < 2; index++) {
 				for (let i = 0; i < this._cardsTemp.length; i++) {
 					let card = this._cards[index + i * 2];
@@ -148,10 +148,10 @@ module gamebaijiale.manager {
 						this._game.playSound(PathGameTongyong.music_tongyong + "fapai.mp3", false);
 						if (!card) return;
 						card.fapai();
-						// counter++;
-						// if (counter >= this._cards.length) {
-						// 	this.event(BaijialeMgr.DEAL_OVER);
-						// }
+						counter++;
+						if (counter >= this._cards.length) {
+							this.event(BaijialeMgr.DEAL_OVER);
+						}
 					});
 					count++;
 				}
