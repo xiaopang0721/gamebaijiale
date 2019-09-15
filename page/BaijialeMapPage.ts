@@ -122,7 +122,6 @@ module gamebaijiale.page {
         protected onOpen(): void {
             super.onOpen();
             this._viewUI.btn_spread.on(LEvent.CLICK, this, this.onBtnClickWithTween);
-            this._viewUI.btn_cardType.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_back.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_rule.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_set.on(LEvent.CLICK, this, this.onBtnClickWithTween);
@@ -967,11 +966,6 @@ module gamebaijiale.page {
                 case this._viewUI.btn_playerList://玩家列表
                     this._game.uiRoot.general.open(BaijialePageDef.PAGE_BAIJIALE_PLAYER_LIST);
                     break;
-                case this._viewUI.btn_cardType://牌型
-                    this._game.uiRoot.general.open(BaijialePageDef.PAGE_BAIJIALE_RULE, (page: BaijialeRulePage) => {
-                        page.dataSource = 1;
-                    });
-                    break;
                 case this._viewUI.btn_road://大路详情
                     this._game.uiRoot.general.open(BaijialePageDef.PAGE_BAIJIALE_ROAD);
                     break;
@@ -1541,7 +1535,6 @@ module gamebaijiale.page {
         public close(): void {
             if (this._viewUI) {
                 this._viewUI.btn_spread.off(LEvent.CLICK, this, this.onBtnClickWithTween);
-                this._viewUI.btn_cardType.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_back.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_rule.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_set.off(LEvent.CLICK, this, this.onBtnClickWithTween);
