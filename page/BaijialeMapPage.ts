@@ -156,6 +156,16 @@ module gamebaijiale.page {
             this.onUpdateSeatedList();
         }
 
+        private _curDiffTime: number;
+        update(diff: number) {
+            if (!this._curDiffTime || this._curDiffTime < 0) {
+                this._viewUI.btn_chongzhi.ani1.play(0, false);
+                this._curDiffTime = TongyongPageDef.CZ_PLAY_DIFF_TIME;
+            } else {
+                this._curDiffTime -= diff;
+            }
+        }
+
         //帧间隔心跳
         deltaUpdate() {
             let bool = this._curStatus == MAP_STATUS.PLAY_STATUS_BET || this._curStatus == MAP_STATUS.PLAY_STATUS_SETTLE;
