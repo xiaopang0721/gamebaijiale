@@ -179,8 +179,6 @@ module gamebaijiale.story {
 						this._baijialeMgr.addCard(card, handle, cardIdx, 2, true);
 					} else {
 						Laya.timer.once(2500 * (timeCount - 1), this, () => {
-
-
 							if (this._baijialeMgr) {
 								this._baijialeMgr.addCard(card, handle, cardIdx, 2, false);
 							}

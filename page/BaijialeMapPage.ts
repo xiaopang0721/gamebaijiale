@@ -192,8 +192,7 @@ module gamebaijiale.page {
         }
 
         private onUpdateAniDeal(): void {
-            this._viewUI.ani_deal.ani1.stop();
-            this._viewUI.ani_deal.visible = false;
+            this._viewUI.paixieRight.ani2.gotoAndStop(0);
         }
 
         // 刷新点数
@@ -318,8 +317,7 @@ module gamebaijiale.page {
                 this.onUpdateCardType();
                 this.onUpdateGameNo();
                 if (!this._baijialeMgr.isReConnect) {
-                    this._viewUI.ani_deal.ani1.stop();
-                    this._viewUI.ani_deal.visible = false;
+                    this._viewUI.paixieRight.ani2.gotoAndStop(0);
                 }
             }
         }
@@ -537,6 +535,9 @@ module gamebaijiale.page {
                         }
                         this._cardsArr[info.SeatIndex - 1].push(cardVal);
                         if (!this._baijialeMgr.isReConnect && this._curStatus == MAP_STATUS.PLAY_STATUS_ADD_CARD) {
+                            Laya.timer.once(350 + 2500 * (timeCount - 1), this, () => {
+                                this._viewUI.paixieRight.ani2.play(0, false);
+                            })
                             Laya.timer.once(800 + 2500 * (timeCount - 1), this, () => {
                                 this._aniKaiList[info.SeatIndex + 1].card.skin = StringU.substitute(PathGameTongyong.ui_tongyong_pai + "{0}.png", cardVal);
                                 this._aniKaiList[info.SeatIndex + 1].visible = true;
@@ -1434,8 +1435,7 @@ module gamebaijiale.page {
             this._viewUI.box_time.visible = false;
             this._viewUI.xipai.visible = false;
             this._viewUI.paixieRight.ani_chupai.stop();
-            this._viewUI.ani_deal.ani1.stop();
-            this._viewUI.ani_deal.visible = false;
+            this._viewUI.paixieRight.ani2.gotoAndStop(0);
             this._viewUI.box_road.visible = false;
             this._viewUI.box_xian.visible = false;
             this._viewUI.box_zhuang.visible = false;
@@ -1585,7 +1585,7 @@ module gamebaijiale.page {
                 this._aniKaiList = [];
                 this._chipTotalList = [];
                 this._viewUI.paixieRight.ani_chupai.stop();
-                this._viewUI.ani_deal.ani1.stop();
+                this._viewUI.paixieRight.ani2.gotoAndStop(0);
                 this.resetAll();
                 if (this._baijialeMgr) {
                     this._baijialeMgr.off(BaijialeMgr.DEAL_OVER, this, this.onUpdateAniDeal);
