@@ -144,7 +144,7 @@ module gamebaijiale.manager {
 				for (let i = 0; i < this._cardsTemp.length; i++) {
 					let card = this._cards[index + i * 2];
 					//播音效
-					Laya.timer.once(200 * count, this, () => {
+					Laya.timer.once(120 * count, this, () => {
 						this._game.playSound(PathGameTongyong.music_tongyong + "fapai.mp3", false);
 						if (!card) return;
 						card.fapai();
