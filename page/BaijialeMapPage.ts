@@ -158,6 +158,7 @@ module gamebaijiale.page {
 
         private _curDiffTime: number;
         update(diff: number) {
+            super.update(diff);
             if (!this._curDiffTime || this._curDiffTime < 0) {
                 this._viewUI.btn_chongzhi.ani1.play(0, false);
                 this._curDiffTime = TongyongPageDef.CZ_PLAY_DIFF_TIME;
