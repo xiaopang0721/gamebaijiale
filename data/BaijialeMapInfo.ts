@@ -140,7 +140,7 @@ module gamebaijiale.data {
 			let index = 0;
 			for (let i: number = 0; i < betInfo.length; i++) {
 				if (betInfo[i] > 0) {
-					if (count == 4) {
+					if (count == 3) {
 						count = 0;
 						index++;
 					}
