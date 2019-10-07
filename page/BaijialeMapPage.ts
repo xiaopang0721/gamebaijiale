@@ -83,17 +83,17 @@ module gamebaijiale.page {
             this._isNeedDuang = false;
             this._delta = 1000;
             this._asset = [
+                DatingPath.atlas_dating_ui + "qifu.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
-                Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "tuichu.atlas",
-                PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/suiji.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/kaipai.atlas",
+                Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
                 PathGameTongyong.ui_tongyong_sk + "HeGuan.png",
             ];
         }
