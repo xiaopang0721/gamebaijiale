@@ -81,25 +81,14 @@ module gamebaijiale.page {
 		private _index: number;
 		private _clipNum: BaijialeClip;
 		private _clipMoney: BaijialeClip;
-		private _unitHeadImg: string;
-		private _nameStrInfo: string[] = ["xs", "px", "gsy", "gg", "cs", "tdg"];
 		setData(game: Game, data: any) {
 			this._game = game;
 			this._unit = data.unit;
 			this._index = data.index;
-			this._unitHeadImg = this._unit.GetHeadImg();
 
 			this.txt_name.text = this._unit.GetName();
-			if (this._unitHeadImg) {
-				this.img_head.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + this._unitHeadImg + ".png";
-			}
-			if (this._unit.GetQiFuType() && this._unit.GetQFEndTime(this._unit.GetQiFuType() - 1) > this._game.sync.serverTimeBys) {
-				this.img_head.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + this._nameStrInfo[this._unit.GetQiFuType() - 1] + ".png";
-			}
-			this.img_txk.visible = this._unit.GetVipLevel() > 0;
-			if (this.img_txk.visible) {
-				this.img_txk.skin = PathGameTongyong.ui_tongyong_touxiang + "tu_v" + this._unit.GetVipLevel() + ".png";
-			}
+			this.img_head.skin = this._game.datingGame.getHeadUrl(this._unit.GetHeadImg(), 2);
+			this.img_txk.skin = this._game.datingGame.getTouXiangKuangUrl(this._unit.GetHeadKuangImg(), 2);
 			if (!this._clipNum) {
 				this._clipNum = new BaijialeClip(BaijialeClip.RANK_FONT2)
 				this._clipNum.x = this.clip_num.x;
