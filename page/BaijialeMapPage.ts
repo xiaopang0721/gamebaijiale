@@ -1302,40 +1302,42 @@ module gamebaijiale.page {
             for (let i = 0; i < this._seatUIList.length; i++) {
                 let unitIndex = this._unitSeated[i][0];
                 let unit = this._game.sceneObjectMgr.getUnitByIdx(unitIndex);
+                let seat = this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI;
                 if (unit) {
-                    (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).txt_name.text = getMainPlayerName(unit.GetName());
-                    (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).txt_money.text = EnumToString.getPointBackNum(unit.GetMoney(), 2).toString();
-                    (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).txt_name.fontSize = 15;                    
-                    (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).img_icon.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
-                    (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).img_txk.skin = this._game.datingGame.getTouXiangKuangUrl(unit.GetHeadKuangImg(), 2);
+                    seat.img_txk.visible = true;
+                    seat.txt_name.text = getMainPlayerName(unit.GetName());
+                    seat.txt_money.text = EnumToString.getPointBackNum(unit.GetMoney(), 2).toString();
+                    seat.txt_name.fontSize = 15;                    
+                    seat.img_icon.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
+                    seat.img_txk.skin = this._game.datingGame.getTouXiangKuangUrl(unit.GetHeadKuangImg(), 2);
                     //祈福成功 头像上就有动画
                     if (qifu_index && unitIndex == qifu_index) {
-                        this._seatUIList[i].qifu_type.visible = true;
-                        this._seatUIList[i].qifu_type.skin = this._qifuTypeImgUrl;
-                        this.playTween1(this._seatUIList[i].qifu_type, qifu_index);
+                        seat.qifu_type.visible = true;
+                        seat.qifu_type.skin = this._qifuTypeImgUrl;
+                        this.playTween1(seat.qifu_type, qifu_index);
                     }
                     //时间戳变化 才加上祈福标志
                     if (this._game.datingGame.getIsHaveQiFu(unit)) {
                         if (qifu_index && unitIndex == qifu_index) {
                             Laya.timer.once(2500, this, () => {
-                                this._seatUIList[i].img_qifu.visible = true;
-                                (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).img_icon.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
+                                seat.img_qifu.visible = true;
+                                seat.img_icon.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
                             })
                         } else {
-                            this._seatUIList[i].img_qifu.visible = true;
-                            (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).img_icon.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
+                            seat.img_qifu.visible = true;
+                            seat.img_icon.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
                         }
                     } else {
-                        this._seatUIList[i].img_qifu.visible = false;
+                        seat.img_qifu.visible = false;
                     }
                 } else {
-                    (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).txt_name.text = "";
-                    (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).txt_money.text = "点击入座";
-                    (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).txt_name.fontSize = 20;
-                    (this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI).img_icon.skin = PathGameTongyong.ui_tongyong_general + "tu_weizi.png";
-                    this._seatUIList[i].img_qifu.visible = false;
-                    this._seatUIList[i].qifu_type.visible = false;
-                    this._seatUIList[i].img_txk.visible = false;
+                    seat.txt_name.text = "";
+                    seat.txt_money.text = "点击入座";
+                    seat.txt_name.fontSize = 20;
+                    seat.img_icon.skin = PathGameTongyong.ui_tongyong_general + "tu_weizi.png";
+                    seat.img_qifu.visible = false;
+                    seat.qifu_type.visible = false;
+                    seat.img_txk.visible = false;
                 }
             }
         }
