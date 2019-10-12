@@ -439,6 +439,7 @@ module gamebaijiale.page {
         private qifuFly(dataSource: any): void {
             if (!dataSource) return;
             let dataInfo = dataSource;
+            if (!this._game.sceneObjectMgr || !this._game.sceneObjectMgr.mainUnit || this._game.sceneObjectMgr.mainUnit.GetIndex() != dataSource.qifu_index) return;
             this._game.qifuMgr.showFlayAni(this._viewUI.main_player, this._viewUI, dataSource, (dataInfo) => {
                 //相对应的玩家精灵做出反应
                 this._qifuTypeImgUrl = TongyongUtil.getQFTypeImg(dataInfo.qf_id);
