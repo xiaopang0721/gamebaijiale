@@ -88,7 +88,7 @@ module gamebaijiale.page {
 
 			this.txt_name.text = this._unit.GetName();
 			this.img_head.skin = TongyongUtil.getHeadUrl(this._unit.GetHeadImg(), 2);
-			this.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(this._unit.GetHeadKuangImg(), 2);
+			this.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(this._unit.GetHeadKuangImg());
 			if (!this._clipNum) {
 				this._clipNum = new BaijialeClip(BaijialeClip.RANK_FONT2)
 				this._clipNum.x = this.clip_num.x;
