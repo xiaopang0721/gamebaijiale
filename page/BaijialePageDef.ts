@@ -50,7 +50,6 @@ module gamebaijiale.page {
 				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/kaipai.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/bigwin.atlas",
-				Path_game_baijiale.ui_baijiale + "zjh.jpg",
 				Path.custom_atlas_scene + 'card.atlas',
 				Path.custom_atlas_scene + 'chip.atlas',
 
