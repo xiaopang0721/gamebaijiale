@@ -1298,7 +1298,7 @@ module gamebaijiale.page {
             for (let i = 0; i < this._seatUIList.length; i++) {
                 let unitIndex = this._unitSeated[i][0];
                 let unit = this._game.sceneObjectMgr.getUnitByIdx(unitIndex);
-                let seat = this._seatUIList[i] as ui.nqp.game_ui.tongyong.TouXiangWzUI;
+                let seat = this._seatUIList[i];
                 if (unit) {
                     seat.img_txk.visible = true;
                     seat.txt_name.text = getMainPlayerName(unit.GetName());
