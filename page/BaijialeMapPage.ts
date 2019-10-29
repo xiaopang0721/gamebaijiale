@@ -621,12 +621,14 @@ module gamebaijiale.page {
         private createChip(startIdx: number, targetIdx: number, type: number, value: number, index: number, unitIndex: number) {
             let chip = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CHIP_MARK, BaijialeChip) as BaijialeChip;
             chip.setData(startIdx, targetIdx, type, value, index, unitIndex);
+            chip.visible = false;
             this._chipTotalList[targetIdx - 1].push(chip);
             if (this._baijialeMgr.isReConnect && this._curStatus != MAP_STATUS.PLAY_STATUS_BET) {
                 chip.drawChip();
             }
             else {
                 Laya.timer.once(350, this, () => {
+                    chip.visible = true;
                     chip.sendChip();
                     this._game.playSound(Path_game_baijiale.music_baijiale + "chouma.mp3", false);
                 })
