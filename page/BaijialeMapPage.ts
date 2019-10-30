@@ -390,7 +390,7 @@ module gamebaijiale.page {
                             this._viewUI.main_player.img_qifu.visible = true;
                             this._viewUI.main_player.img_icon.skin = TongyongUtil.getHeadUrl(mainUnit.GetHeadImg(), 2);
                         })
-                    } 
+                    }
                     // else {
                     //     this._viewUI.main_player.img_qifu.visible = true;
                     //     this._viewUI.main_player.img_icon.skin = TongyongUtil.getHeadUrl(mainUnit.GetHeadImg(), 2);
@@ -1323,7 +1323,7 @@ module gamebaijiale.page {
                                 seat.img_qifu.visible = true;
                                 seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
                             })
-                        } 
+                        }
                         // else {
                         //     seat.img_qifu.visible = true;
                         //     seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
@@ -1491,6 +1491,12 @@ module gamebaijiale.page {
             }
             this._viewUI.box_xian.visible = false;
             this._viewUI.box_zhuang.visible = false;
+            if (this._aniKaiList && this._aniKaiList.length > 0)
+                for (let i = 0; i < this._aniKaiList.length; i++) {
+                    let aniKai = this._aniKaiList[i];
+                    aniKai.ani_kaipai.stop();
+                    aniKai.visible = false;
+                }
         }
 
         private resetData(): void {
