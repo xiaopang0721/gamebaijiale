@@ -89,7 +89,7 @@ module gamebaijiale.data {
 			this.targe_pos.y = posY;
 			this.size = this._size;
 			this.rotateAngle = Math.PI * 4;
-			super.refapai();
+			super.reFapai();
 		}
 
 		bupai() {
