@@ -392,7 +392,7 @@ module gamebaijiale.page {
                             this._viewUI.main_player.img_qifu.visible = true;
                             this._viewUI.main_player.img_icon.skin = TongyongUtil.getHeadUrl(mainUnit.GetHeadImg(), 2);
                         })
-                    } 
+                    }
                     // else {
                     //     this._viewUI.main_player.img_qifu.visible = true;
                     //     this._viewUI.main_player.img_icon.skin = TongyongUtil.getHeadUrl(mainUnit.GetHeadImg(), 2);
@@ -623,12 +623,15 @@ module gamebaijiale.page {
         private createChip(startIdx: number, targetIdx: number, type: number, value: number, index: number, unitIndex: number) {
             let chip = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CHIP_MARK, BaijialeChip) as BaijialeChip;
             chip.setData(startIdx, targetIdx, type, value, index, unitIndex);
+            chip.visible = false;
             this._chipTotalList[targetIdx - 1].push(chip);
             if (this._baijialeMgr.isReConnect && this._curStatus != MAP_STATUS.PLAY_STATUS_BET) {
+                chip.visible = true;
                 chip.drawChip();
             }
             else {
                 Laya.timer.once(350, this, () => {
+                    chip.visible = true;
                     chip.sendChip();
                     this._game.playSound(Path_game_baijiale.music_baijiale + "chouma.mp3", false);
                 })
@@ -1008,7 +1011,6 @@ module gamebaijiale.page {
 
         //重复下注
         private repeatBet(): void {
-            if (this.showIsGuest()) return;
             if (this._betWait) return;//投注间隔
             let betArr = [];
             let total = 0;
@@ -1062,7 +1064,6 @@ module gamebaijiale.page {
         //天地玄黄下注
         private _betWait: boolean = false;
         private onAreaBetClick(index: number, e: LEvent): void {
-            if (this.showIsGuest()) return;
             if (this._curStatus != MAP_STATUS.PLAY_STATUS_BET) {
                 this._game.uiRoot.topUnder.showTips("当前不在下注时间，请在下注时间再进行下注！");
                 return;
@@ -1131,7 +1132,6 @@ module gamebaijiale.page {
 
         //选择座位入座
         private onSelectSeat(index: number): void {
-            if (this.showIsGuest()) return;
             let mainUnit = this._game.sceneObjectMgr.mainUnit;
             if (!mainUnit) return;
             if (mainUnit.GetMoney() < this._seatlimit) {
@@ -1239,16 +1239,6 @@ module gamebaijiale.page {
             });
         }
 
-        private showIsGuest(): boolean {
-            if (WebConfig.baseplatform == PageDef.BASE_PLATFORM_TYPE_NQP) return false;
-            if (this._game.sceneObjectMgr.mainPlayer.IsIsGuest()) {
-                TongyongPageDef.ins.alertRecharge("亲爱的玩家，您正使用游客模式进行游戏，该模式下的游戏数据（包括付费数据）在删除游戏、更换设备后清空！对此造成的损失，本平台将不承担任何责任。为保障您的虚拟财产安全，我们强力建议您绑定手机号升级为正式账号。",
-                    () => { }, () => { }, true);
-                return true;
-            }
-            return false;
-        }
-
         private resetAll(): void {
             Laya.Tween.clearAll(this);
             Laya.timer.clearAll(this);
@@ -1336,7 +1326,7 @@ module gamebaijiale.page {
                                 seat.img_qifu.visible = true;
                                 seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
                             })
-                        } 
+                        }
                         // else {
                         //     seat.img_qifu.visible = true;
                         //     seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
@@ -1504,6 +1494,12 @@ module gamebaijiale.page {
             }
             this._viewUI.box_xian.visible = false;
             this._viewUI.box_zhuang.visible = false;
+            if (this._aniKaiList && this._aniKaiList.length > 0)
+                for (let i = 0; i < this._aniKaiList.length; i++) {
+                    let aniKai = this._aniKaiList[i];
+                    aniKai.ani_kaipai.stop();
+                    aniKai.visible = false;
+                }
         }
 
         private resetData(): void {

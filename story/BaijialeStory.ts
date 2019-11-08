@@ -78,10 +78,10 @@ module gamebaijiale.story {
 					this.cardsDeal();
 					break;
 				case MAP_STATUS.PLAY_STATUS_BET:// 下注阶段
-					this._baijialeMgr.isReConnect = false;
 					this.cardsReDeal();
 					break;
 				case MAP_STATUS.PLAY_STATUS_SHOW_CARD:// 开牌阶段
+					this._baijialeMgr.isReConnect = false;
 					this.cardsReDeal();
 					break;
 				case MAP_STATUS.PLAY_STATUS_ADD_CARD:// 补牌阶段
