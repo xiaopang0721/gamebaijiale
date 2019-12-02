@@ -123,6 +123,8 @@ module gamebaijiale.page {
         // 页面打开时执行函数
         protected onOpen(): void {
             super.onOpen();
+            //api充值不显示
+            this._viewUI.btn_chongzhi.visible = !WebConfig.enterGameLocked;
             this._viewUI.btn_spread.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_back.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_rule.on(LEvent.CLICK, this, this.onBtnClickWithTween);
@@ -390,7 +392,7 @@ module gamebaijiale.page {
                             this._viewUI.main_player.img_qifu.visible = true;
                             this._viewUI.main_player.img_icon.skin = TongyongUtil.getHeadUrl(mainUnit.GetHeadImg(), 2);
                         })
-                    } 
+                    }
                     // else {
                     //     this._viewUI.main_player.img_qifu.visible = true;
                     //     this._viewUI.main_player.img_icon.skin = TongyongUtil.getHeadUrl(mainUnit.GetHeadImg(), 2);
@@ -621,12 +623,15 @@ module gamebaijiale.page {
         private createChip(startIdx: number, targetIdx: number, type: number, value: number, index: number, unitIndex: number) {
             let chip = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CHIP_MARK, BaijialeChip) as BaijialeChip;
             chip.setData(startIdx, targetIdx, type, value, index, unitIndex);
+            chip.visible = false;
             this._chipTotalList[targetIdx - 1].push(chip);
             if (this._baijialeMgr.isReConnect && this._curStatus != MAP_STATUS.PLAY_STATUS_BET) {
+                chip.visible = true;
                 chip.drawChip();
             }
             else {
                 Laya.timer.once(350, this, () => {
+                    chip.visible = true;
                     chip.sendChip();
                     this._game.playSound(Path_game_baijiale.music_baijiale + "chouma.mp3", false);
                 })
@@ -1321,7 +1326,7 @@ module gamebaijiale.page {
                                 seat.img_qifu.visible = true;
                                 seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
                             })
-                        } 
+                        }
                         // else {
                         //     seat.img_qifu.visible = true;
                         //     seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
@@ -1489,6 +1494,12 @@ module gamebaijiale.page {
             }
             this._viewUI.box_xian.visible = false;
             this._viewUI.box_zhuang.visible = false;
+            if (this._aniKaiList && this._aniKaiList.length > 0)
+                for (let i = 0; i < this._aniKaiList.length; i++) {
+                    let aniKai = this._aniKaiList[i];
+                    aniKai.ani_kaipai.stop();
+                    aniKai.visible = false;
+                }
         }
 
         private resetData(): void {
