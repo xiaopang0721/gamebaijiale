@@ -3,7 +3,7 @@
 */
 module gamebaijiale.page {
 	export class BaijialePlayerListPage extends game.gui.base.Page {
-		private _viewUI: ui.nqp.game_ui.tongyong.WanJiaLBUI;
+		private _viewUI: ui.ajqp.game_ui.tongyong.WanJiaLBUI;
 
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);
@@ -75,7 +75,7 @@ module gamebaijiale.page {
 		}
 	}
 
-	class PlayerItemRender extends ui.nqp.game_ui.tongyong.WanJiaUI {
+	class PlayerItemRender extends ui.ajqp.game_ui.tongyong.WanJiaUI {
 		private _game: Game;
 		private _unit: Unit;
 		private _index: number;
