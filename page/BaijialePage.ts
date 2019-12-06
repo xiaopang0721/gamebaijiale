@@ -43,7 +43,7 @@ module gamebaijiale.page {
 		protected onOpen(): void {
 			super.onOpen();
 			this._viewUI.btn_join.on(LEvent.CLICK, this, this.onBtnClickWithTween);
-			(this._viewUI.view as TongyongHudNqpPage).onOpen(this._game, BaijialePageDef.GAME_NAME);
+			(this._viewUI.view as TongyongHudPage).onOpen(this._game, BaijialePageDef.GAME_NAME);
 
 			let datas = [];
 			for (let i = 0; i < BaijialePage.BET_MAX.length; i++) {
