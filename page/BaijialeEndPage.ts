@@ -1,14 +1,14 @@
 /**
 * name 
 */
-module gamebaijiale.page{
+module gamebaijiale.page {
 	export class BaijialeEndPage extends game.gui.base.Page {
-		private _viewUI: ui.nqp.game_ui.baijiale.StopUI;
-		
+		private _viewUI: ui.ajqp.game_ui.baijiale.StopUI;
+
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);
 			this._asset = [
-				PathGameTongyong.atlas_game_ui_tongyong+ "general.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
 			];
 		}
 
@@ -24,10 +24,10 @@ module gamebaijiale.page{
 			this._viewUI.ani1.on(LEvent.COMPLETE, this, this.onPlayComplte);
 			this._viewUI.ani1.play(0, false);
 		}
-	
-        private onPlayComplte(): void {
-            this.close();
-        }
+
+		private onPlayComplte(): void {
+			this.close();
+		}
 
 		public close(): void {
 			if (this._viewUI) {

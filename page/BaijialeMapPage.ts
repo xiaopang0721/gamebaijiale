@@ -11,8 +11,7 @@ module gamebaijiale.page {
         PLAY_STATUS_SHOW_CARD = 4, // 开牌阶段
         PLAY_STATUS_ADD_CARD = 5, // 补牌阶段
         PLAY_STATUS_SETTLE = 6, // 结算阶段
-        PLAY_STATUS_SHOW_INFO = 7, // 显示结算信息阶段
-        PLAY_STATUS_RELAX = 8, // 休息阶段
+        PLAY_STATUS_RELAX = 7, // 休息阶段
     }
     const CARDS_TOTAL_COUNT = 416 // 8副牌总数
     const PLAYER_LEAST_MONEY = 20 // 投注最少携带金额
@@ -37,7 +36,7 @@ module gamebaijiale.page {
             "144": [100000, 20000, 50000],    //富豪(上庄限制，入座限制，投注限额)
         };
 
-        private _viewUI: ui.nqp.game_ui.baijiale.BaiJiaLeUI;
+        private _viewUI: ui.ajqp.game_ui.baijiale.BaiJiaLeUI;
         private _baijialeMgr: BaijialeMgr;
         private _baijialeStory: BaijialeStory;
         private _baijialeMapInfo: BaijialeMapInfo;
@@ -49,12 +48,12 @@ module gamebaijiale.page {
         private _txtTotalUIList: Array<any> = [];//总下注文本UI集合
         private _txtBetUIList: Array<any> = [];//玩家下注文本UI集合
         private _seatUIList: Array<any> = [];//座位UI集合
-        private _chipUIList: Array<Button> = [];//筹码UI集合
+        private _chipUIList: Array<ui.ajqp.game_ui.tongyong.effect.Effect_cmUI> = [];//筹码UI集合
         private _aniKaiList: Array<any> = [];//开牌ani集合
-        private _chipGuangUIList: Array<LImage> = [];//筹码光效UI集合
         private _chipArr: Array<number> = [];//筹码大小类型
         private _cardsArr: Array<any> = [];//开牌信息集合
         private _clipList: Array<BaijialeClip> = [];//飘字集合
+        private _imgdiList: Array<LImage> = [];//飘字底集合
         private _robotConfig: any;//机器人配置
         private _szlimit: number;//上庄金币
         private _seatlimit: number;//入座金币
@@ -84,17 +83,22 @@ module gamebaijiale.page {
             this._delta = 1000;
             this._asset = [
                 DatingPath.atlas_dating_ui + "qifu.atlas",
+                PathGameTongyong.ui_tongyong_sk + "HeGuan.png",
+                Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
+                Path_game_baijiale.atlas_game_ui_baijiale_effect + "zy.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
-                PathGameTongyong.atlas_game_ui_tongyong + "tuichu.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "nyl.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/suiji.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/kaipai.atlas",
-                Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
-                PathGameTongyong.ui_tongyong_sk + "HeGuan.png",
+                PathGameTongyong.atlas_game_ui_tongyong_general + "anniu.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong_general_effect + "ksyx.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong_general_effect + "ksxz.atlas",
             ];
         }
 
@@ -114,8 +118,7 @@ module gamebaijiale.page {
                 }
                 this.onUpdateMapInfo();
             }
-            this._viewUI.btn_spread.left = this._game.isFullScreen ? 30 : 10;
-            this._viewUI.box_menu.left = this._game.isFullScreen ? 25 : 10;
+            this._viewUI.box_left.left = this._game.isFullScreen ? 25 : 5;
             this._viewUI.mouseThrough = true;
             this._game.playMusic(Path_game_baijiale.music_baijiale + "bjl_bgm.mp3");
         }
@@ -134,8 +137,7 @@ module gamebaijiale.page {
             this._viewUI.btn_chongzhi.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_road.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_qifu.on(LEvent.CLICK, this, this.onBtnClickWithTween);
-            this._viewUI.btn_playerList.on(LEvent.CLICK, this, this.onClickHandle);
-
+            this._viewUI.btn_playerList.on(LEvent.CLICK, this, this.onBtnClickWithTween);
 
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_ADD_UNIT, this, this.onUnitAdd);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_REMOVE_UNIT, this, this.onUnitRemove);
@@ -144,7 +146,6 @@ module gamebaijiale.page {
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_UNIT_ACTION, this, this.onUpdateUnit);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_MAPINFO_CHANGE, this, this.onUpdateMapInfo);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_UNIT_QIFU_TIME_CHANGE, this, this.onUpdateUnit);
-
             this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_STATUS_CHECK, this, this.onUpdateStatus);
             this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_BATTLE_CHECK, this, this.onUpdateBattle);
             this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_GAME_TURN_CHANGE, this, this.onUpdateTurn);//回合数变化
@@ -154,6 +155,9 @@ module gamebaijiale.page {
             this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_SEATED_LIST, this, this.onUpdateSeatedList);//入座列表更新
             this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_CARD_POOL_CHANGE, this, this.onUpdateCardPool);//牌库数量变化
             this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_ADD_CARD_TYPE, this, this.onUpdateCardType);//补牌类型
+            this._viewUI.effWin_xian.ani1.on(LEvent.COMPLETE, this, this.playAniOver, [1]);
+            this._viewUI.effWin_zhuang.ani1.on(LEvent.COMPLETE, this, this.playAniOver, [2]);
+            this._viewUI.effWin_he.ani1.on(LEvent.COMPLETE, this, this.playAniOver, [3]);
             this._game.qifuMgr.on(QiFuMgr.QIFU_FLY, this, this.qifuFly);
 
             this.onUpdateUnitOffline();
@@ -234,6 +238,44 @@ module gamebaijiale.page {
             }
         }
 
+        private playAniOver(type: number): void {
+            this._viewUI.effWin_xian.visible = false;
+            this._viewUI.effWin_xian.ani1.stop();
+            this._viewUI.effWin_zhuang.visible = false;
+            this._viewUI.effWin_zhuang.ani1.stop();
+            this._viewUI.effWin_he.visible = false;
+            this._viewUI.effWin_he.ani1.stop();
+        }
+
+        private showMainReusult(): void {
+            if (this._mainPlayerBenefit >= 0) {
+                let rand = MathU.randomRange(1, 3);
+                this._game.playSound(StringU.substitute(PathGameTongyong.music_tongyong + "win{0}.mp3", rand), true);
+            } else if (this._mainPlayerBenefit < 0) {
+                let rand = MathU.randomRange(1, 4);
+                this._game.playSound(StringU.substitute(PathGameTongyong.music_tongyong + "lose{0}.mp3", rand), true);
+            }
+            if (this._clipResult && this._clipResult.length > 0) {
+                for (let i = 0; i < this._clipResult.length; i++) {
+                    let info = this._clipResult[i];
+                    this.addMoneyClip(info[0], info[1]);
+                }
+            }
+            if (this._mainResult == 0) {
+                this._viewUI.effWin_xian.visible = true;
+                this._viewUI.effWin_xian.ani1.play(0, false);
+
+            } else if (this._mainResult == 1) {
+                this._viewUI.effWin_zhuang.visible = true;
+                this._viewUI.effWin_zhuang.ani1.play(0, false);
+            }
+            else if (this._mainResult == 2) {
+                this._viewUI.effWin_he.visible = true;
+                this._viewUI.effWin_he.ani1.play(0, false);
+            }
+        }
+
+        private _mainResult: number = -1;
         private onUpdateResult(): void {
             if (this._curStatus < MAP_STATUS.PLAY_STATUS_ADD_CARD) return;
             if (this._cardsArr && !this._cardsArr.length) return;
@@ -259,27 +301,25 @@ module gamebaijiale.page {
             }
             let resultArr = [];
             if (xianCount > zhuangCount) {
+                this._mainResult = 0;
+                this._viewUI.effWin_xian.img_result.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_xy.png"
+                this._viewUI.effWin_xian.img_result1.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_xy.png"
                 Laya.timer.once(timeSpace + 500, this, () => {
                     this._game.playSound(Path_game_baijiale.music_baijiale + "win_xian.mp3", false);
-                    this._game.uiRoot.HUD.open(BaijialePageDef.PAGE_BAIJIALE_RESULT, (page) => {
-                        page.dataSource = 0;
-                    });
                 })
                 resultArr.push(0)
             } else if (xianCount < zhuangCount) {
+                this._mainResult = 1;
+                this._viewUI.effWin_xian.img_result.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_zy.png"
+                this._viewUI.effWin_xian.img_result1.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_zy.png"
                 Laya.timer.once(timeSpace + 500, this, () => {
                     this._game.playSound(Path_game_baijiale.music_baijiale + "win_zhuang.mp3", false);
-                    this._game.uiRoot.HUD.open(BaijialePageDef.PAGE_BAIJIALE_RESULT, (page) => {
-                        page.dataSource = 1;
-                    })
                 });
                 resultArr.push(1)
             } else {
+                this._mainResult = 2;
                 Laya.timer.once(timeSpace + 500, this, () => {
                     this._game.playSound(Path_game_baijiale.music_baijiale + "he.mp3", false);
-                    this._game.uiRoot.HUD.open(BaijialePageDef.PAGE_BAIJIALE_RESULT, (page) => {
-                        page.dataSource = 2;
-                    });
                 })
                 resultArr.push(2)
             }
@@ -301,19 +341,15 @@ module gamebaijiale.page {
             };
 
             for (let i = 0; i < resultArr.length; i++) {
-                Laya.timer.once(600, this, () => {
-                    this.kuangShanShuo(resultArr[i])
-                });
+                this._areaKuangUIList[resultArr[i]].visible = true;
             }
         }
 
-        private kuangShanShuo(index): void {
-            this._areaKuangUIList[index].visible = true;
-            this._areaKuangUIList[index].ani1.play(0, true);
-            Laya.timer.once(3000, this, () => {
-                this._areaKuangUIList[index].ani1.stop();
-                this._areaKuangUIList[index].visible = false;
-            });
+        private kuangShanShuo(img) {
+            img.alpha = 0;
+            Laya.Tween.to(img, { alpha: 1 }, 333, null, Handler.create(this, () => {
+                this.kuangShanShuo(img);
+            }))
         }
 
         private onUpdateMapInfo(): void {
@@ -328,7 +364,6 @@ module gamebaijiale.page {
                 this.onUpdateTurn();
                 this.onUpdateRecord(1);
                 this.updateOnline();
-                this.onUpdateChipGrey();
                 this.onUpdateCardType();
                 this.onUpdateGameNo();
                 if (!this._baijialeMgr.isReConnect) {
@@ -337,15 +372,15 @@ module gamebaijiale.page {
             }
         }
 
-        private onUpdateChipGrey() {
+        private onUpdateChipGrey(isBetState: boolean) {
             if (!this._game.sceneObjectMgr.mainUnit) return;
+            if (!isBetState) return;
             let money: number = this._game.sceneObjectMgr.mainUnit.GetMoney();
             for (let i = 0; i < this._chipUIList.length; i++) {
                 let index = this._chipUIList.length - 1 - i;
                 if (money < this._chipArr[index]) {
                     this._chipUIList[index].disabled = true;
                     this._chipUIList[index].y = this._curChipY;
-                    this._chipGuangUIList[index].visible = false;
                 } else {
                     this._chipUIList[index].disabled = false;
                 }
@@ -393,16 +428,11 @@ module gamebaijiale.page {
                             this._viewUI.main_player.img_icon.skin = TongyongUtil.getHeadUrl(mainUnit.GetHeadImg(), 2);
                         })
                     }
-                    // else {
-                    //     this._viewUI.main_player.img_qifu.visible = true;
-                    //     this._viewUI.main_player.img_icon.skin = TongyongUtil.getHeadUrl(mainUnit.GetHeadImg(), 2);
-                    // }
                 } else {
                     this._viewUI.main_player.img_icon.skin = TongyongUtil.getHeadUrl(mainUnit.GetHeadImg(), 2);
                     this._viewUI.main_player.img_qifu.visible = false;
                 }
             }
-            this.onUpdateChipGrey();
             this.onUpdateSeatedList(qifu_index);
         }
 
@@ -528,10 +558,10 @@ module gamebaijiale.page {
                         }
                         this._cardsArr[info.SeatIndex - 1].push(cardVal);
                         if (!this._baijialeMgr.isReConnect && this._curStatus == MAP_STATUS.PLAY_STATUS_ADD_CARD) {
-                            Laya.timer.once(350 + 2500 * (timeCount - 1), this, () => {
+                            Laya.timer.once(350 + 2000 * (timeCount - 1), this, () => {
                                 this._viewUI.paixieRight.ani2.play(0, false);
                             })
-                            Laya.timer.once(800 + 2500 * (timeCount - 1), this, () => {
+                            Laya.timer.once(800 + 2000 * (timeCount - 1), this, () => {
                                 this._aniKaiList[info.SeatIndex + 1].card.skin = StringU.substitute(PathGameTongyong.ui_tongyong_pai + "{0}.png", cardVal);
                                 this._aniKaiList[info.SeatIndex + 1].visible = true;
                                 this._aniKaiList[info.SeatIndex + 1].ani_kaipai.play(0, false);
@@ -567,7 +597,6 @@ module gamebaijiale.page {
             let isMainPlayer: boolean = info.SeatIndex == mainIdx;
             if (isMainPlayer) {//主玩家
                 startIdx = 0;
-                this.moveHead(this._viewUI.main_player, this._mainHeadPos[0][0], this._mainHeadPos[0][1], this._mainHeadPos[1][0], this._mainHeadPos[1][1]);
             } else {//其他玩家
                 startIdx = 1;
                 for (let i = 0; i < this._unitSeated.length; i++) {
@@ -578,12 +607,9 @@ module gamebaijiale.page {
                         startIdx = 3 + i;
                     }
                 }
-                if (startIdx == 1) {
-                    this.moveHead(this._viewUI.btn_playerList, 70, 657, 80, 647);
-                }
             }
             targetIdx = info.BetIndex;
-            let type = this._chipArr.indexOf(info.BetVal) + 1;
+            let type = this._chipArr.indexOf(info.BetVal);
             this.createChip(startIdx, targetIdx, type, info.BetVal, index, info.SeatIndex);
             this.updateChipOnTable(targetIdx - 1, info.BetVal, isMainPlayer);
         }
@@ -591,8 +617,8 @@ module gamebaijiale.page {
         //头像出筹码动态效果
         private moveHead(view, startX, startY, endX, endY): void {
             Laya.Tween.clearAll(view);
-            Laya.Tween.to(view, { x: endX, y: endY }, 150, null, Handler.create(this, () => {
-                Laya.Tween.to(view, { x: startX, y: startY }, 150);
+            Laya.Tween.to(view, { x: endX, y: endY }, 50, null, Handler.create(this, () => {
+                Laya.Tween.to(view, { x: startX, y: startY }, 50);
             }))
         }
 
@@ -630,11 +656,9 @@ module gamebaijiale.page {
                 chip.drawChip();
             }
             else {
-                Laya.timer.once(350, this, () => {
-                    chip.visible = true;
-                    chip.sendChip();
-                    this._game.playSound(Path_game_baijiale.music_baijiale + "chouma.mp3", false);
-                })
+                chip.visible = true;
+                chip.sendChip();
+                this._game.playSound(Path_game_baijiale.music_baijiale + "chouma.mp3", false);
             }
             this._chipSortScore = index;//存下来最后一个筹码层级
         }
@@ -649,13 +673,14 @@ module gamebaijiale.page {
             })
         }
 
+        private _clipResult: any[] = [];
         private onBattleSettle(info: any): void {
             if (!this._game.sceneObjectMgr.mainUnit) return;
             if (this._game.sceneObjectMgr.mainUnit.GetIndex() == info.SeatIndex) {
                 this._mainPlayerBenefit = parseFloat(info.SettleVal);
             }
             if (info.SettleVal == 0) return;
-            this.addMoneyClip(info.SeatIndex, info.SettleVal);
+            this._clipResult.push([info.SeatIndex, info.SettleVal]);
         }
 
         private areaName = ["闲", "庄", "和", "闲天王", "闲对子", "庄天王", "庄对子"];
@@ -762,11 +787,9 @@ module gamebaijiale.page {
 
         //金币变化 飘字clip
         public addMoneyClip(index: number, value: number): void {
-            let valueClip = value >= 0 ? new BaijialeClip(BaijialeClip.ADD_MONEY_FONT) : new BaijialeClip(BaijialeClip.SUB_MONEY_FONT);
+            let clip_money = value >= 0 ? new BaijialeClip(BaijialeClip.ADD_MONEY_FONT) : new BaijialeClip(BaijialeClip.SUB_MONEY_FONT);
             let preSkin = value >= 0 ? PathGameTongyong.ui_tongyong_general + "tu_jia.png" : PathGameTongyong.ui_tongyong_general + "tu_jian.png";
-            valueClip.scale(0.8, 0.8);
-            valueClip.anchorX = 0.5;
-            valueClip.setText(Math.abs(value), true, false, preSkin);
+            let img_di = value >= 0 ? new LImage(PathGameTongyong.ui_tongyong_general + "tu_yingqian.png") : new LImage(PathGameTongyong.ui_tongyong_general + "tu_shuqian.png");
             let playerIcon: any;
             if (index == this._game.sceneObjectMgr.mainUnit.GetIndex()) {
                 playerIcon = this._viewUI.main_player;
@@ -785,13 +808,27 @@ module gamebaijiale.page {
                 if (!bool) return;
                 playerIcon = this._seatUIList[seatIndex - 1];
             }
-            valueClip.x = playerIcon.clip_money.x;
-            valueClip.y = playerIcon.clip_money.y;
-            playerIcon.clip_money.parent.addChild(valueClip);
-            this._clipList.push(valueClip);
+            //飘字底
+            img_di.centerX = playerIcon.img_di.centerX;
+            img_di.centerY = playerIcon.img_di.centerY;
+            playerIcon.img_di.parent.addChild(img_di);
+            this._imgdiList.push(img_di);
+            playerIcon.img_di.visible = false;
+            //飘字
+            clip_money.setText(Math.abs(value), true, false, preSkin);
+            clip_money.centerX = playerIcon.clip_money.centerX;
+            clip_money.centerY = playerIcon.clip_money.centerY;
+            playerIcon.clip_money.parent.addChild(clip_money);
+            this._clipList.push(clip_money);
             playerIcon.clip_money.visible = false;
-            Laya.Tween.clearAll(valueClip);
-            Laya.Tween.to(valueClip, { y: valueClip.y - 25 }, 1500);
+            //飘字box缓动
+            playerIcon.box_clip.y = 57;
+            playerIcon.box_clip.visible = true;
+            Laya.Tween.clearAll(playerIcon.box_clip);
+            Laya.Tween.to(playerIcon.box_clip, { y: playerIcon.box_clip.y - 50 }, 1000);
+            //赢钱动画
+            playerIcon.effWin.visible = value > 0;
+            value > 0 && playerIcon.effWin.ani1.play(0, false);
         }
 
         //清理飘字clip
@@ -805,6 +842,16 @@ module gamebaijiale.page {
                 }
             }
             this._clipList = [];
+
+            if (this._imgdiList && this._imgdiList.length) {
+                for (let j: number = 0; j < this._imgdiList.length; j++) {
+                    let imgdi = this._imgdiList[j];
+                    imgdi.removeSelf();
+                    imgdi.destroy(true);
+                    imgdi = null;
+                }
+            }
+            this._imgdiList = [];
         }
 
         //更新地图状态
@@ -814,8 +861,7 @@ module gamebaijiale.page {
             let mapStatus = this._baijialeMapInfo.GetMapState();
             if (this._curStatus == mapStatus) return;
             this._curStatus = mapStatus;
-            this._viewUI.btn_repeat.disabled = this._curStatus != MAP_STATUS.PLAY_STATUS_BET;
-
+            this.onChipDisabled(this._curStatus == MAP_STATUS.PLAY_STATUS_BET);
             switch (this._curStatus) {
                 case MAP_STATUS.PLAY_STATUS_NONE:// 准备阶段
                     this._viewUI.txt_status.index = 1;
@@ -859,15 +905,6 @@ module gamebaijiale.page {
                             }
                         }
                         this._viewUI.btn_repeat.disabled = !bool;
-
-                        for (let i = 0; i < this._areaKuangUIList.length; i++) {
-                            this._areaKuangUIList[i].visible = true;
-                            this._areaKuangUIList[i].ani1.play(0, true);
-                            Laya.timer.once(1000, this, () => {
-                                this._areaKuangUIList[i].ani1.stop();
-                                this._areaKuangUIList[i].visible = false;
-                            });
-                        }
                         this._baijialeMgr.isReConnect = false;
                     } else {
                         this._pageHandle.pushOpen({ id: BaijialePageDef.PAGE_BAIJIALE_BEGIN, parent: this._game.uiRoot.HUD });
@@ -883,13 +920,14 @@ module gamebaijiale.page {
                             }
                         }
                         this._viewUI.btn_repeat.disabled = !bool;
-
                         for (let i = 0; i < this._areaKuangUIList.length; i++) {
                             this._areaKuangUIList[i].visible = true;
-                            this._areaKuangUIList[i].ani1.play(0, true);
+                            this.kuangShanShuo(this._areaKuangUIList[i]);
                             Laya.timer.once(1000, this, () => {
-                                this._areaKuangUIList[i].ani1.stop();
                                 this._areaKuangUIList[i].visible = false;
+                                this._areaKuangUIList[i].alpha = 1;
+                                Laya.Tween.clearAll(this._areaKuangUIList[i]);
+                                Laya.timer.clearAll(this._areaKuangUIList[i]);
                             });
                         }
                     }
@@ -921,24 +959,15 @@ module gamebaijiale.page {
                     this.onUpdateCount(1);//强校验庄家点数，防止点数没有更新
                     this.onUpdateSeatedList();
                     this._viewUI.txt_status.index = 6;
-                    if (!this._baijialeMgr.isReConnect) {
-                        this.flyChipEffect();
-                    }
                     this.onUpdateResult();
-                    break;
-                case MAP_STATUS.PLAY_STATUS_SHOW_INFO:// 显示结算信息阶段
-                    this._pageHandle.pushClose({ id: BaijialePageDef.PAGE_BAIJIALE_RESULT, parent: this._game.uiRoot.HUD });
-                    this._viewUI.txt_status.index = 6;
-                    this.showSettleInfo();
-                    Laya.timer.once(1000, this, () => {
-                        if (this._mainPlayerBenefit >= 0) {
-                            let rand = MathU.randomRange(1, 3);
-                            this._game.playSound(StringU.substitute(PathGameTongyong.music_tongyong + "win{0}.mp3", rand), true);
-                        } else if (this._mainPlayerBenefit < 0) {
-                            let rand = MathU.randomRange(1, 4);
-                            this._game.playSound(StringU.substitute(PathGameTongyong.music_tongyong + "lose{0}.mp3", rand), true);
-                        }
-                    });
+                    if (!this._baijialeMgr.isReConnect) {
+                        this.showMainReusult();
+                        Laya.timer.once(1000, this, () => {
+                            this.flyChipEffect();
+                        });
+                    } else {
+                        this.showMainReusult();
+                    }
                     break;
                 case MAP_STATUS.PLAY_STATUS_RELAX:// 休息阶段
                     this._pageHandle.pushClose({ id: TongyongPageDef.PAGE_TONGYONG_SETTLE, parent: this._game.uiRoot.HUD });
@@ -953,17 +982,11 @@ module gamebaijiale.page {
             this._pageHandle.reset();//清空额外界面存储数组
         }
 
-        //点击事件
-        protected onClickHandle(e: LEvent): void {
-            //玩家列表
-            this._game.uiRoot.general.open(BaijialePageDef.PAGE_BAIJIALE_PLAYER_LIST);
-        }
-
         //按钮缓动回调
         protected onBtnTweenEnd(e: any, target: any): void {
             switch (target) {
                 case this._viewUI.btn_spread:
-                    this.showMenu(true);
+                    this.menuTween(!this._viewUI.box_menu.visible);
                     break;
                 case this._viewUI.btn_road://大路详情
                     this._game.uiRoot.general.open(BaijialePageDef.PAGE_BAIJIALE_ROAD);
@@ -982,6 +1005,9 @@ module gamebaijiale.page {
                         page.dataSource = BaijialePageDef.GAME_NAME;
                     });
                     break;
+                case this._viewUI.btn_playerList://在线人数
+                    this._game.uiRoot.general.open(TongyongPageDef.PAGE_TONGYONG_PLAYER_LIST);
+                    break;
                 case this._viewUI.btn_chongzhi://充值
                     this._game.uiRoot.general.open(DatingPageDef.PAGE_CHONGZHI);
                     break;
@@ -997,16 +1023,11 @@ module gamebaijiale.page {
                         this._game.showTips("游戏尚未结束，请先打完这局哦~");
                         return;
                     }
-                    TongyongPageDef.ins.alertClose("baijiale", this, this.onClickCancle);
+                    this._game.sceneObjectMgr.leaveStory(true);
                     break;
                 default:
                     break;
             }
-        }
-
-        //确定退出回调
-        private onClickCancle(): void {
-            this._game.sceneObjectMgr.leaveStory(true);
         }
 
         //重复下注
@@ -1055,19 +1076,33 @@ module gamebaijiale.page {
                     }
                 }
             }
+            this.moveHead(this._viewUI.main_player, this._mainHeadPos[0][0], this._mainHeadPos[0][1], this._mainHeadPos[1][0], this._mainHeadPos[1][1]);
             this._betWait = true;
-            Laya.timer.once(500, this, () => {
+            Laya.timer.once(100, this, () => {
                 this._betWait = false;
             })
         }
 
-        //天地玄黄下注
         private _betWait: boolean = false;
-        private onAreaBetClick(index: number, e: LEvent): void {
+        private onAreaBetMouseOut(index: number, e: LEvent): void {
+            if (this._curStatus == MAP_STATUS.PLAY_STATUS_BET) {
+                this._areaKuangUIList[index].visible = false;
+            }
+        }
+
+        private onAreaBetMouseDown(index: number, e: LEvent): void {
+            if (this._curStatus == MAP_STATUS.PLAY_STATUS_BET) {
+                this._areaKuangUIList[index].visible = true;
+            }
+        }
+
+        //百家乐下注
+        private onAreaBetMouseUp(index: number, e: LEvent): void {
             if (this._curStatus != MAP_STATUS.PLAY_STATUS_BET) {
                 this._game.uiRoot.topUnder.showTips("当前不在下注时间，请在下注时间再进行下注！");
                 return;
             }
+            this._areaKuangUIList[index].visible = false;
             if (this._betWait) return;//投注间隔
             let total = this._betMainList[index];
             if (this._curChip + total > this._betlimit) {
@@ -1105,9 +1140,9 @@ module gamebaijiale.page {
                 }, true, TongyongPageDef.TIPS_SKIN_STR['cz']);
                 return;
             }
-
+            this.moveHead(this._viewUI.main_player, this._mainHeadPos[0][0], this._mainHeadPos[0][1], this._mainHeadPos[1][0], this._mainHeadPos[1][1]);
             this._betWait = true;
-            Laya.timer.once(500, this, () => {
+            Laya.timer.once(100, this, () => {
                 this._betWait = false;
             })
             this._rebetList[index] += this._curChip;
@@ -1125,8 +1160,38 @@ module gamebaijiale.page {
         private onSelectChip(index: number): void {
             this._curChip = this._chipArr[index];
             for (let i: number = 0; i < this._chipUIList.length; i++) {
-                this._chipGuangUIList[i].visible = i == index;
                 this._chipUIList[i].y = i == index ? this._curChipY - 10 : this._curChipY;
+                this._chipUIList[i].img0.visible = this._chipUIList[i].img1.visible = i == index;
+                if (i == index) {
+                    this._chipUIList[i].ani1.play(0, true);
+                } else {
+                    this._chipUIList[i].ani1.gotoAndStop(0);
+                }
+            }
+        }
+
+        //筹码是否置灰（是否下注阶段）
+        private onChipDisabled(isBetState: boolean): void {
+            this.onUpdateChipGrey(isBetState);
+            this._viewUI.btn_repeat.disabled = !isBetState;
+            if (isBetState) {
+                let index = this._chipArr.indexOf(this._curChip);
+                for (let i: number = 0; i < this._chipUIList.length; i++) {
+                    Laya.Tween.to(this._chipUIList[i], { y: i == index ? this._curChipY - 10 : this._curChipY }, 300);
+                    this._chipUIList[i].img0.visible = this._chipUIList[i].img1.visible = i == index;
+                    if (i == index) {
+                        this._chipUIList[i].ani1.play(0, true);
+                    } else {
+                        this._chipUIList[i].ani1.gotoAndStop(0);
+                    }
+                }
+            } else {
+                for (let i: number = 0; i < this._chipUIList.length; i++) {
+                    Laya.Tween.to(this._chipUIList[i], { y: this._curChipY + 10 }, 300);
+                    this._chipUIList[i].disabled = true;
+                    this._chipUIList[i].ani1.gotoAndStop(0);
+                    this._chipUIList[i].img0.visible = this._chipUIList[i].img1.visible = false;
+                }
             }
         }
 
@@ -1174,69 +1239,22 @@ module gamebaijiale.page {
 
         protected onMouseClick(e: LEvent) {
             if (e.target != this._viewUI.btn_spread) {
-                this.showMenu(false);
+                this.menuTween(false);
             }
         }
 
-        showMenu(isShow: boolean) {
-            if (isShow) {
+        //菜单栏
+        private menuTween(isOpen: boolean) {
+            if (isOpen) {
                 this._viewUI.box_menu.visible = true;
-                this._viewUI.btn_spread.visible = false;
-                this._viewUI.box_menu.y = -this._viewUI.box_menu.height;
-                Laya.Tween.clearAll(this._viewUI.box_menu);
-                Laya.Tween.to(this._viewUI.box_menu, { y: 10 }, 300, Laya.Ease.circIn)
+                this._viewUI.box_menu.scale(0.2, 0.2);
+                this._viewUI.box_menu.alpha = 0;
+                Laya.Tween.to(this._viewUI.box_menu, { scaleX: 1, scaleY: 1, alpha: 1 }, 500, Laya.Ease.backInOut);
             } else {
-                if (this._viewUI.box_menu.y >= 0) {
-                    Laya.Tween.clearAll(this._viewUI.box_menu);
-                    Laya.Tween.to(this._viewUI.box_menu, { y: -this._viewUI.box_menu.height }, 300, Laya.Ease.circIn, Handler.create(this, () => {
-                        this._viewUI.btn_spread.visible = true;
-                        this._viewUI.box_menu.visible = false;
-                    }));
-                }
+                Laya.Tween.to(this._viewUI.box_menu, { scaleX: 0.2, scaleY: 0.2, alpha: 0 }, 500, Laya.Ease.backInOut, Handler.create(this, () => {
+                    this._viewUI.box_menu.visible = false;
+                }));
             }
-        }
-
-        //显示结算界面
-        private showSettleInfo(): void {
-            if (this._cardsArr && !this._cardsArr.length) return;
-            let resultList: Array<number> = [0, 0, 0, 0, 0, 0, 0];
-            let xianCards: Array<BaijialeData> = this._baijialeMgr.initCards(this._cardsArr[0]);
-            let zhuangCards: Array<BaijialeData> = this._baijialeMgr.initCards(this._cardsArr[1]);
-            let xianCount = 0;
-            let zhuangCount = 0;
-            let isHeJu = false;
-            for (let i = 0; i < xianCards.length; i++) {
-                xianCount += xianCards[i].GetCardCount();
-            }
-            for (let j = 0; j < zhuangCards.length; j++) {
-                zhuangCount += zhuangCards[j].GetCardCount();
-            }
-            xianCount = xianCount % 10;
-            zhuangCount = zhuangCount % 10;
-            if (xianCount > zhuangCount) {
-                resultList[1] = 1;
-                resultList[2] = 1;
-            } else if (xianCount < zhuangCount) {
-                resultList[0] = 1;
-                resultList[2] = 1;
-            } else {//和局退还闲家和庄家的筹码
-                isHeJu = true;
-                resultList[0] = 2;
-                resultList[1] = 2;
-            }
-            //闲天王
-            resultList[3] = (xianCards[0].GetCardCount() + xianCards[1].GetCardCount()) % 10 >= 8 ? 0 : 1;
-            //闲对子
-            resultList[4] = (xianCards[0].GetCardVal() == xianCards[1].GetCardVal()) ? 0 : 1;
-            //庄对子
-            resultList[5] = (zhuangCards[0].GetCardVal() == zhuangCards[1].GetCardVal()) ? 0 : 1;
-            //庄天王
-            resultList[6] = (zhuangCards[0].GetCardCount() + zhuangCards[1].GetCardCount()) % 10 >= 8 ? 0 : 1;
-            this._pageHandle.pushOpen({
-                id: TongyongPageDef.PAGE_TONGYONG_SETTLE,
-                dataSource: { myBet: this._betMainTotal, myBenefit: this._mainPlayerBenefit, lottery: this._lottery },
-                parent: this._game.uiRoot.HUD
-            });
         }
 
         private resetAll(): void {
@@ -1274,15 +1292,15 @@ module gamebaijiale.page {
                         recordArr[17 - i] = data[data.length - 1 - i];
                         newRecordArr[17 - i] = data[data.length - 1 - i];
                     }
-                    if (!val) {
-                        newRecordArr[newRecordArr.length - 1] = 99;
-                        this._viewUI.list_record.dataSource = newRecordArr;
-                        Laya.timer.once(1000, this, () => {
-                            this._viewUI.list_record.dataSource = recordArr;
-                        })
-                    } else {
-                        this._viewUI.list_record.dataSource = recordArr;
-                    }
+                    // if (!val) {
+                    //     newRecordArr[newRecordArr.length - 1] = 99;
+                    //     this._viewUI.list_record.dataSource = newRecordArr;
+                    //     Laya.timer.once(1000, this, () => {
+                    //         this._viewUI.list_record.dataSource = recordArr;
+                    //     })
+                    // } else {
+                    this._viewUI.list_record.dataSource = recordArr;
+                    // }
                 } else {
                     this._viewUI.list_record.dataSource = data;
                 }
@@ -1327,10 +1345,6 @@ module gamebaijiale.page {
                                 seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
                             })
                         }
-                        // else {
-                        //     seat.img_qifu.visible = true;
-                        //     seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
-                        // }
                     } else {
                         seat.img_qifu.visible = false;
                     }
@@ -1354,7 +1368,6 @@ module gamebaijiale.page {
             this._areaList = [];
             this._chipUIList = [];
             this._seatUIList = [];
-            this._chipGuangUIList = [];
             this._areaKuangUIList = [];
             this._txtTotalUIList = [];
             this._txtBetUIList = [];
@@ -1365,7 +1378,9 @@ module gamebaijiale.page {
                 this._areaKuangUIList.push(this._viewUI["kuang" + i]);
                 this._txtTotalUIList.push(this._viewUI["txt_total" + i]);
                 this._areaKuangUIList[i].visible = false;
-                this._areaList[i].on(LEvent.CLICK, this, this.onAreaBetClick, [i]);
+                this._areaList[i].on(LEvent.MOUSE_DOWN, this, this.onAreaBetMouseDown, [i]);
+                this._areaList[i].on(LEvent.MOUSE_UP, this, this.onAreaBetMouseUp, [i]);
+                this._areaList[i].on(LEvent.MOUSE_OUT, this, this.onAreaBetMouseOut, [i]);
 
                 if (i < 2) {
                     this._htmlTextArr[i] = TextFieldU.createHtmlText(this._txtTotalUIList[i]);
@@ -1383,18 +1398,17 @@ module gamebaijiale.page {
             for (let i: number = 0; i < 5; i++) {
                 this._chipUIList.push(this._viewUI["btn_chip" + i]);
                 this._chipUIList[i].on(LEvent.CLICK, this, this.onSelectChip, [i]);
-                this._chipGuangUIList.push(this._viewUI["guang" + i]);
                 if (i == 0) {
                     this._curChipY = this._chipUIList[i].y;
-                    this._chipGuangUIList[i].visible = true;
-                } else {
-                    this._chipGuangUIList[i].visible = false;
                 }
             }
             for (let i: number = 0; i < 6; i++) {
                 this._seatUIList.push(this._viewUI["seat" + i]);
                 this._seatUIList[i].clip_money.visible = false;
                 this._seatUIList[i].on(LEvent.CLICK, this, this.onSelectSeat, [i]);
+                this._seatUIList[i].effWin.visible = false;
+                this._seatUIList[i].img_qifu.visible = false;
+                this._seatUIList[i].img_vip.visible = false;
             }
             for (let i: number = 0; i < 4; i++) {
                 this._aniKaiList.push(this._viewUI["ani_kai" + i]);
@@ -1409,16 +1423,19 @@ module gamebaijiale.page {
             this._turnClip = new BaijialeClip(BaijialeClip.GAME_ROUND);
             //主玩家UI
             this._viewUI.main_player.clip_money.visible = false;
+            this._viewUI.main_player.effWin.visible = false;
             //界面UI
             this._viewUI.txt_id.visible = false;
             this._viewUI.box_time.visible = false;
             this._viewUI.xipai.visible = false;
             this._viewUI.paixieRight.ani_chupai.gotoAndStop(12);
             this._viewUI.paixieRight.ani2.gotoAndStop(0);
-            this._viewUI.box_road.visible = false;
             this._viewUI.box_xian.visible = false;
             this._viewUI.box_zhuang.visible = false;
             this._viewUI.btn_repeat.disabled = true;
+            this._viewUI.effWin_he.visible = false;
+            this._viewUI.effWin_zhuang.visible = false;
+            this._viewUI.effWin_xian.visible = false;
         }
 
         private renderHandler(cell: MapRecordRender, index: number) {
@@ -1440,7 +1457,8 @@ module gamebaijiale.page {
                 }
                 if (!this._chipArr) return;
                 for (let i = 0; i < this._chipArr.length; i++) {
-                    this._chipUIList[i].label = EnumToString.sampleChipNum(this._chipArr[i]);
+                    this._chipUIList[i].btn_num.label = EnumToString.sampleChipNum(this._chipArr[i]);
+                    this._chipUIList[i].btn_num.skin = StringU.substitute(PathGameTongyong.ui_tongyong_general + "tu_cm{0}.png", i);
                 }
                 if (!this._curChip) this.onSelectChip(0);
             }
@@ -1481,7 +1499,6 @@ module gamebaijiale.page {
             //主玩家UI
             this._viewUI.main_player.clip_money.visible = false;
             //界面UI
-            // this._viewUI.img_banker.visible = true;
             for (let i = 0; i < 7; i++) {
                 if (i < 5) {
                     this._txtBetUIList[i].text = "0";
@@ -1492,19 +1509,28 @@ module gamebaijiale.page {
                     this._txtTotalUIList[i].text = "0";
                 }
             }
+            this._viewUI.effWin_he.visible = false;
+            this._viewUI.effWin_zhuang.visible = false;
+            this._viewUI.effWin_xian.visible = false;
             this._viewUI.box_xian.visible = false;
             this._viewUI.box_zhuang.visible = false;
-            if (this._aniKaiList && this._aniKaiList.length > 0)
+            if (this._aniKaiList && this._aniKaiList.length > 0) {
                 for (let i = 0; i < this._aniKaiList.length; i++) {
-                    let aniKai = this._aniKaiList[i];
-                    aniKai.ani_kaipai.stop();
-                    aniKai.visible = false;
+                    this._aniKaiList[i].ani_kaipai.stop();
+                    this._aniKaiList[i].visible = false;
                 }
+            }
+            if (this._areaKuangUIList && this._areaKuangUIList.length > 0) {
+                for (let i = 0; i < this._areaKuangUIList.length; i++) {
+                    this._areaKuangUIList[i].visible = false;
+                }
+            }
         }
 
         private resetData(): void {
             this._battleIndex = -1;
             this._cardsArr = [];
+            this._clipResult = [];
             this._betTotalList = [0, 0, 0, 0, 0, 0, 0];
             this._betMainList = [0, 0, 0, 0, 0, 0, 0];
             this._askTimes = 0;
@@ -1528,7 +1554,7 @@ module gamebaijiale.page {
                 this._viewUI.btn_chongzhi.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_road.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_qifu.off(LEvent.CLICK, this, this.onBtnClickWithTween);
-                this._viewUI.btn_playerList.off(LEvent.CLICK, this, this.onClickHandle);
+                this._viewUI.btn_playerList.off(LEvent.CLICK, this, this.onBtnClickWithTween);
 
                 this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_ADD_UNIT, this, this.onUnitAdd);
                 this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_REMOVE_UNIT, this, this.onUnitRemove);
@@ -1548,10 +1574,15 @@ module gamebaijiale.page {
                 this._game.sceneObjectMgr.off(BaijialeMapInfo.EVENT_CARD_POOL_CHANGE, this, this.onUpdateCardPool);//牌库数量变化
                 this._game.sceneObjectMgr.off(BaijialeMapInfo.EVENT_ADD_CARD_TYPE, this, this.onUpdateCardType);//补牌类型
 
+                this._viewUI.effWin_xian.ani1.off(LEvent.COMPLETE, this, this.playAniOver);
+                this._viewUI.effWin_zhuang.ani1.off(LEvent.COMPLETE, this, this.playAniOver);
+                this._viewUI.effWin_he.ani1.off(LEvent.COMPLETE, this, this.playAniOver);
                 this._game.qifuMgr.off(QiFuMgr.QIFU_FLY, this, this.qifuFly);
 
                 for (let i: number = 0; i < 7; i++) {
-                    this._areaList[i] && this._areaList[i].off(LEvent.CLICK, this, this.onAreaBetClick);
+                    this._areaList[i] && this._areaList[i].off(LEvent.CLICK, this, this.onAreaBetMouseDown);
+                    this._areaList[i] && this._areaList[i].off(LEvent.CLICK, this, this.onAreaBetMouseOut);
+                    this._areaList[i] && this._areaList[i].off(LEvent.CLICK, this, this.onAreaBetMouseUp);
                 }
                 this._areaList = [];
                 for (let i: number = 0; i < 5; i++) {
@@ -1574,7 +1605,6 @@ module gamebaijiale.page {
                 this.resetAll();
                 if (this._baijialeMgr) {
                     this._baijialeMgr.off(BaijialeMgr.DEAL_OVER, this, this.onUpdateAniDeal);
-                    // this._baijialeMgr.off(BaijialeMgr.SHOW_OVER, this, this.onUpdateResult);
                 }
                 this._game.uiRoot.HUD.close(BaijialePageDef.PAGE_BAIJIALE_BEGIN);
                 this._game.uiRoot.HUD.close(BaijialePageDef.PAGE_BAIJIALE_END);
@@ -1588,7 +1618,7 @@ module gamebaijiale.page {
             super.close();
         }
     }
-    class MapRecordRender extends ui.nqp.game_ui.baijiale.component.RecordRenderUI {
+    class MapRecordRender extends ui.ajqp.game_ui.baijiale.component.RecordRenderUI {
         private _game: Game;
         private _data: any;
         constructor() {

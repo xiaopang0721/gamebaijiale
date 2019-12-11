@@ -3,7 +3,7 @@
 */
 module gamebaijiale.page {
 	export class BaijialeRoadPage extends game.gui.base.Page {
-		private _viewUI: ui.nqp.game_ui.baijiale.ZouShiTuUI;
+		private _viewUI: ui.ajqp.game_ui.baijiale.ZouShiTuUI;
 		private _isShenQing: boolean = false;
 		private _mapinfo: BaijialeMapInfo;
 		private _gridEditor: GridEditor;
@@ -14,7 +14,7 @@ module gamebaijiale.page {
 			this._isClickBlack = true;
 			this._isNeedDuang = false;
 			this._asset = [
-				PathGameTongyong.atlas_game_ui_tongyong+ "general.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
 				Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
 			];
 		}
@@ -22,7 +22,7 @@ module gamebaijiale.page {
 		protected init(): void {
 			this._viewUI = this.createView('game_ui.baijiale.ZouShiTuUI');
 			this.addChild(this._viewUI);
-			
+
 			let textureTypes = {
 				"X": PathGameTongyong.ui_tongyong_general + "tu_lq.png",//闲
 				"Z": PathGameTongyong.ui_tongyong_general + "tu_yq2.png",//庄
@@ -36,9 +36,9 @@ module gamebaijiale.page {
 				"8": PathGameTongyong.ui_tongyong_general + "plsz_8.png",
 				"9": PathGameTongyong.ui_tongyong_general + "plsz_9.png",
 			}
-			this._gridEditor = new GridEditor(36.7, 40, 20, 6, textureTypes, false)
-            this._gridEditor.x = 1.5;
-            this._gridEditor.y = -0.5;
+			this._gridEditor = new GridEditor(38.9, 38.9, 20, 6, textureTypes, false)
+			this._gridEditor.x = 1.2;
+			this._gridEditor.y = 1.4;
 			this._viewUI.box_road.addChild(this._gridEditor);
 
 			this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_ROAD_RECORD, this, this.onUpdateRoadInfo);
@@ -122,7 +122,7 @@ module gamebaijiale.page {
 			super.close();
 		}
 	}
-	class MapRecordRender extends ui.nqp.game_ui.baijiale.component.RecordRenderUI {
+	class MapRecordRender extends ui.ajqp.game_ui.baijiale.component.RecordRenderUI {
 		private _game: Game;
 		private _data: any;
 		constructor() {

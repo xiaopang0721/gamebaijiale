@@ -3,7 +3,7 @@
 */
 module gamebaijiale.page {
 	export class BaijialeResultPage extends game.gui.base.Page {
-		private _viewUI: ui.nqp.game_ui.baijiale.YingUI;
+		private _viewUI: ui.ajqp.game_ui.baijiale.YingUI;
 
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);

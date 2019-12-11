@@ -12,14 +12,12 @@ module gamebaijiale.page {
 		static PAGE_BAIJIALE_BEGIN: string = "3";
 		//百家乐游戏VS界面
 		static PAGE_BAIJIALE_VS: string = "4";
-		//百家乐玩家列表界面
-		static PAGE_BAIJIALE_PLAYER_LIST: string = "5";
 		//百家乐停止下注界面
-		static PAGE_BAIJIALE_END: string = "6";
+		static PAGE_BAIJIALE_END: string = "5";
 		//百家乐大路界面
-		static PAGE_BAIJIALE_ROAD: string = "7";
+		static PAGE_BAIJIALE_ROAD: string = "6";
 		//百家乐结果界面
-		static PAGE_BAIJIALE_RESULT: string = "8";
+		static PAGE_BAIJIALE_RESULT: string = "7";
 		//百家乐游戏规则界面
 		static PAGE_BAIJIALE_RULE: string = "101";
 
@@ -30,32 +28,35 @@ module gamebaijiale.page {
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_MAP] = BaijialeMapPage;
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_BEGIN] = BaijialeBeginPage;
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_RULE] = BaijialeRulePage;
-			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_PLAYER_LIST] = BaijialePlayerListPage;
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_END] = BaijialeEndPage;
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_ROAD] = BaijialeRoadPage;
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_RESULT] = BaijialeResultPage;
 
 			this["__needLoadAsset"] = [
-				PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
+				DatingPath.atlas_dating_ui + "qifu.atlas",
+                Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
+                Path_game_baijiale.atlas_game_ui_baijiale_effect + "zy.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "logo.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
-				Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "tuichu.atlas",
-				DatingPath.atlas_dating_ui + "qifu.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/suiji.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/kaipai.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/bigwin.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "nyl.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "general/effect/suiji.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "general/effect/kaipai.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong_general + "anniu.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong_general_effect + "anniug.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong_general_effect + "ksyx.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong_general_effect + "ksxz.atlas",
+
 				Path.custom_atlas_scene + 'card.atlas',
 				Path.custom_atlas_scene + 'chip.atlas',
-
 				PathGameTongyong.ui_tongyong_sk + "HeGuan.sk",
 				PathGameTongyong.ui_tongyong_sk + "HeGuan.png",
-
 				Path.map + 'pz_baijiale.png',
 				Path.map_far + 'bg_baijiale.jpg'
 			]

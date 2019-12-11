@@ -10,8 +10,7 @@ module gamebaijiale.story {
 		PLAY_STATUS_SHOW_CARD = 4, // 开牌阶段
 		PLAY_STATUS_ADD_CARD = 5, // 补牌阶段
 		PLAY_STATUS_SETTLE = 6, // 结算阶段
-		PLAY_STATUS_SHOW_INFO = 7, // 显示结算信息阶段
-		PLAY_STATUS_RELAX = 8, // 休息阶段
+		PLAY_STATUS_RELAX = 7, // 休息阶段
 	}
 	export class BaijialeStory extends gamecomponent.story.StoryBaiRenBase {
 		private _baijialeMgr: BaijialeMgr;
@@ -88,9 +87,6 @@ module gamebaijiale.story {
 					this.cardsReDeal();
 					break;
 				case MAP_STATUS.PLAY_STATUS_SETTLE:// 结算阶段
-					this.cardsReDeal();
-					break;
-				case MAP_STATUS.PLAY_STATUS_SHOW_INFO:// 显示结算信息阶段
 					this.cardsReDeal();
 					break;
 				case MAP_STATUS.PLAY_STATUS_RELAX:// 休息阶段
@@ -178,14 +174,14 @@ module gamebaijiale.story {
 					if (this._baijialeMgr.isReConnect && this._curStatus >= MAP_STATUS.PLAY_STATUS_ADD_CARD) {
 						this._baijialeMgr.addCard(card, handle, cardIdx, 2, true);
 					} else {
-						Laya.timer.once(2500 * (timeCount - 1), this, () => {
+						Laya.timer.once(2000 * (timeCount - 1), this, () => {
 							if (this._baijialeMgr) {
 								this._baijialeMgr.addCard(card, handle, cardIdx, 2, false);
 							}
 							this._game.playSound(StringU.substitute(Path_game_baijiale.music_baijiale + "{0}.mp3", cardIdx == 1 ? "xian" : "zhuang"), false);
 						})
 
-						Laya.timer.once(500 + 2500 * (timeCount - 1), this, () => {
+						Laya.timer.once(500 + 2000 * (timeCount - 1), this, () => {
 
 
 							this._game.playSound(Path_game_baijiale.music_baijiale + "bupai.mp3", false);
