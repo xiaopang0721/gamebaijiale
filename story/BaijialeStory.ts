@@ -10,7 +10,8 @@ module gamebaijiale.story {
 		PLAY_STATUS_SHOW_CARD = 4, // 开牌阶段
 		PLAY_STATUS_ADD_CARD = 5, // 补牌阶段
 		PLAY_STATUS_SETTLE = 6, // 结算阶段
-		PLAY_STATUS_RELAX = 7, // 休息阶段
+		PLAY_STATUS_SHOW_INFO = 7, // 展示阶段
+		PLAY_STATUS_RELAX = 8, // 休息阶段
 	}
 	export class BaijialeStory extends gamecomponent.story.StoryBaiRenBase {
 		private _baijialeMgr: BaijialeMgr;
@@ -87,6 +88,9 @@ module gamebaijiale.story {
 					this.cardsReDeal();
 					break;
 				case MAP_STATUS.PLAY_STATUS_SETTLE:// 结算阶段
+					this.cardsReDeal();
+					break;
+				case MAP_STATUS.PLAY_STATUS_SHOW_INFO:// 展示阶段
 					this.cardsReDeal();
 					break;
 				case MAP_STATUS.PLAY_STATUS_RELAX:// 休息阶段

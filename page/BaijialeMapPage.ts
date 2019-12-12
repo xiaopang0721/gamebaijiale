@@ -11,7 +11,8 @@ module gamebaijiale.page {
         PLAY_STATUS_SHOW_CARD = 4, // 开牌阶段
         PLAY_STATUS_ADD_CARD = 5, // 补牌阶段
         PLAY_STATUS_SETTLE = 6, // 结算阶段
-        PLAY_STATUS_RELAX = 7, // 休息阶段
+        PLAY_STATUS_SHOW_INFO = 7, // 展示阶段
+        PLAY_STATUS_RELAX = 8, // 休息阶段
     }
     const CARDS_TOTAL_COUNT = 416 // 8副牌总数
     const PLAYER_LEAST_MONEY = 20 // 投注最少携带金额
@@ -86,6 +87,7 @@ module gamebaijiale.page {
                 PathGameTongyong.ui_tongyong_sk + "HeGuan.png",
                 Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
                 Path_game_baijiale.atlas_game_ui_baijiale_effect + "zy.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
@@ -177,7 +179,7 @@ module gamebaijiale.page {
 
         //帧间隔心跳
         deltaUpdate() {
-            let bool = this._curStatus == MAP_STATUS.PLAY_STATUS_BET || this._curStatus == MAP_STATUS.PLAY_STATUS_SETTLE;
+            let bool = this._curStatus == MAP_STATUS.PLAY_STATUS_BET || this._curStatus == MAP_STATUS.PLAY_STATUS_SHOW_INFO;
             if (!bool) return;
             let curTime = this._game.sync.serverTimeBys;
             let time = Math.floor(this._countDown - curTime);
@@ -255,6 +257,7 @@ module gamebaijiale.page {
                 let rand = MathU.randomRange(1, 4);
                 this._game.playSound(StringU.substitute(PathGameTongyong.music_tongyong + "lose{0}.mp3", rand), true);
             }
+            this.onUpdateSettleMoney();
             if (this._clipResult && this._clipResult.length > 0) {
                 for (let i = 0; i < this._clipResult.length; i++) {
                     let info = this._clipResult[i];
@@ -408,8 +411,9 @@ module gamebaijiale.page {
             let mainUnit = this._game.sceneObjectMgr.mainUnit;
             if (mainUnit) {
                 this._viewUI.main_player.txt_name.text = getMainPlayerName(mainUnit.GetName());
-                let money = EnumToString.getPointBackNum(mainUnit.GetMoney(), 2);
-                this._viewUI.main_player.txt_money.text = money.toString();
+                if (this._curStatus != MAP_STATUS.PLAY_STATUS_SETTLE) {
+                    this._viewUI.main_player.txt_money.text = EnumToString.getPointBackNum(mainUnit.GetMoney(), 2).toString();
+                }
                 let mainIdx = mainUnit.GetIndex();
                 this._viewUI.main_player.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(mainUnit.GetHeadKuangImg());
                 this._viewUI.main_player.img_vip.visible = mainUnit.GetVipLevel() > 0;
@@ -434,6 +438,84 @@ module gamebaijiale.page {
                 }
             }
             this.onUpdateSeatedList(qifu_index);
+        }
+
+        private onUpdateSeatedList(qifu_index?: number): void {
+            if (!this._baijialeMapInfo) return;
+            let gameList = this._baijialeMapInfo.GetSeatedList();
+            if (gameList != "") {
+                this._unitSeated = JSON.parse(gameList);
+            }
+            if (!this._unitSeated.length) {
+                return;
+            }
+            for (let i = 0; i < this._seatUIList.length; i++) {
+                let unitIndex = this._unitSeated[i][0];
+                let unit = this._game.sceneObjectMgr.getUnitByIdx(unitIndex);
+                let seat = this._seatUIList[i];
+                if (unit) {
+                    seat.img_txk.visible = true;
+                    seat.txt_name.text = getMainPlayerName(unit.GetName());
+                    if (this._curStatus != MAP_STATUS.PLAY_STATUS_SETTLE) {
+                        seat.txt_money.text = EnumToString.getPointBackNum(unit.GetMoney(), 2).toString();
+                    }
+                    seat.txt_name.fontSize = 15;
+                    seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
+                    seat.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(unit.GetHeadKuangImg());
+                    seat.img_vip.visible = unit.GetVipLevel() > 0;
+                    seat.img_vip.skin = TongyongUtil.getVipUrl(unit.GetVipLevel());
+                    //祈福成功 头像上就有动画
+                    if (qifu_index && unitIndex == qifu_index) {
+                        seat.qifu_type.visible = true;
+                        seat.qifu_type.skin = this._qifuTypeImgUrl;
+                        this.playTween1(seat.qifu_type, qifu_index);
+                    }
+                    //时间戳变化 才加上祈福标志
+                    if (TongyongUtil.getIsHaveQiFu(unit, this._game.sync.serverTimeBys)) {
+                        if (qifu_index && unitIndex == qifu_index) {
+                            Laya.timer.once(2500, this, () => {
+                                seat.img_qifu.visible = true;
+                                seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
+                            })
+                        }
+                    } else {
+                        seat.img_qifu.visible = false;
+                    }
+                } else {
+                    seat.txt_name.text = "";
+                    seat.txt_money.text = "点击入座";
+                    seat.txt_name.fontSize = 20;
+                    seat.img_icon.skin = PathGameTongyong.ui_tongyong_general + "tu_weizi.png";
+                    seat.img_qifu.visible = false;
+                    seat.qifu_type.visible = false;
+                    seat.img_txk.visible = false;
+                    seat.img_vip.visible = false;
+                }
+            }
+        }
+
+        private onUpdateSettleMoney(): void {
+            if (!this._baijialeMapInfo) return;
+            let mainUnit = this._game.sceneObjectMgr.mainUnit;
+            if (mainUnit) {
+                let money = EnumToString.getPointBackNum(mainUnit.GetMoney(), 2);
+                this._viewUI.main_player.txt_money.text = money.toString();
+            }
+            let seatedList = this._baijialeMapInfo.GetSeatedList();
+            if (seatedList != "") {
+                this._unitSeated = JSON.parse(seatedList);
+            }
+            if (!this._unitSeated.length) {
+                return;
+            }
+            for (let i = 0; i < this._seatUIList.length; i++) {
+                let unitIndex = this._unitSeated[i][0];
+                let unit = this._game.sceneObjectMgr.getUnitByIdx(unitIndex);
+                let seat = this._seatUIList[i];
+                if (unit) {
+                    seat.txt_money.text = EnumToString.getPointBackNum(unit.GetMoney(), 2).toString();
+                }
+            }
         }
 
         private _diff: number = 500;
@@ -749,8 +831,8 @@ module gamebaijiale.page {
                         Laya.timer.once(800, this, () => {
                             this._game.playSound(Path_game_baijiale.music_baijiale + "piaoqian.mp3", false);
                             for (let j = 0; j < 20; j++) {
-                                let ranType = MathU.randomRange(1, 5);
-                                let ranVal = this._chipArr[ranType - 1];
+                                let ranType = MathU.randomRange(0, 4);
+                                let ranVal = this._chipArr[ranType];
                                 this._chipSortScore++;
                                 this.bankerFlyChip(2, i + 1, ranType, ranVal, this._chipSortScore, -1);
                             }
@@ -960,14 +1042,13 @@ module gamebaijiale.page {
                     this.onUpdateSeatedList();
                     this._viewUI.txt_status.index = 6;
                     this.onUpdateResult();
-                    if (!this._baijialeMgr.isReConnect) {
+                    break;
+                case MAP_STATUS.PLAY_STATUS_SHOW_INFO:// 展示阶段
+                    this._viewUI.txt_status.index = 6;
+                    this.flyChipEffect();
+                    Laya.timer.once(2200, this, () => {
                         this.showMainReusult();
-                        Laya.timer.once(1000, this, () => {
-                            this.flyChipEffect();
-                        });
-                    } else {
-                        this.showMainReusult();
-                    }
+                    });
                     break;
                 case MAP_STATUS.PLAY_STATUS_RELAX:// 休息阶段
                     this._pageHandle.pushClose({ id: TongyongPageDef.PAGE_TONGYONG_SETTLE, parent: this._game.uiRoot.HUD });
@@ -1249,9 +1330,9 @@ module gamebaijiale.page {
                 this._viewUI.box_menu.visible = true;
                 this._viewUI.box_menu.scale(0.2, 0.2);
                 this._viewUI.box_menu.alpha = 0;
-                Laya.Tween.to(this._viewUI.box_menu, { scaleX: 1, scaleY: 1, alpha: 1 }, 500, Laya.Ease.backInOut);
+                Laya.Tween.to(this._viewUI.box_menu, { scaleX: 1, scaleY: 1, alpha: 1 }, 300, Laya.Ease.backInOut);
             } else {
-                Laya.Tween.to(this._viewUI.box_menu, { scaleX: 0.2, scaleY: 0.2, alpha: 0 }, 500, Laya.Ease.backInOut, Handler.create(this, () => {
+                Laya.Tween.to(this._viewUI.box_menu, { scaleX: 0.2, scaleY: 0.2, alpha: 0 }, 300, Laya.Ease.backInOut, Handler.create(this, () => {
                     this._viewUI.box_menu.visible = false;
                 }));
             }
@@ -1306,58 +1387,6 @@ module gamebaijiale.page {
                 }
             } else {//没数据要初始化
                 this._viewUI.list_record.dataSource = recordArr;
-            }
-        }
-
-        private onUpdateSeatedList(qifu_index?: number): void {
-            if (!this._baijialeMapInfo) return;
-            let gameList = this._baijialeMapInfo.GetSeatedList();
-            if (gameList != "") {
-                this._unitSeated = JSON.parse(gameList);
-            }
-            if (!this._unitSeated.length) {
-                return;
-            }
-            for (let i = 0; i < this._seatUIList.length; i++) {
-                let unitIndex = this._unitSeated[i][0];
-                let unit = this._game.sceneObjectMgr.getUnitByIdx(unitIndex);
-                let seat = this._seatUIList[i];
-                if (unit) {
-                    seat.img_txk.visible = true;
-                    seat.txt_name.text = getMainPlayerName(unit.GetName());
-                    seat.txt_money.text = EnumToString.getPointBackNum(unit.GetMoney(), 2).toString();
-                    seat.txt_name.fontSize = 15;
-                    seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
-                    seat.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(unit.GetHeadKuangImg());
-                    seat.img_vip.visible = unit.GetVipLevel() > 0;
-                    seat.img_vip.skin = TongyongUtil.getVipUrl(unit.GetVipLevel());
-                    //祈福成功 头像上就有动画
-                    if (qifu_index && unitIndex == qifu_index) {
-                        seat.qifu_type.visible = true;
-                        seat.qifu_type.skin = this._qifuTypeImgUrl;
-                        this.playTween1(seat.qifu_type, qifu_index);
-                    }
-                    //时间戳变化 才加上祈福标志
-                    if (TongyongUtil.getIsHaveQiFu(unit, this._game.sync.serverTimeBys)) {
-                        if (qifu_index && unitIndex == qifu_index) {
-                            Laya.timer.once(2500, this, () => {
-                                seat.img_qifu.visible = true;
-                                seat.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
-                            })
-                        }
-                    } else {
-                        seat.img_qifu.visible = false;
-                    }
-                } else {
-                    seat.txt_name.text = "";
-                    seat.txt_money.text = "点击入座";
-                    seat.txt_name.fontSize = 20;
-                    seat.img_icon.skin = PathGameTongyong.ui_tongyong_general + "tu_weizi.png";
-                    seat.img_qifu.visible = false;
-                    seat.qifu_type.visible = false;
-                    seat.img_txk.visible = false;
-                    seat.img_vip.visible = false;
-                }
             }
         }
 
