@@ -180,7 +180,10 @@ module gamebaijiale.page {
         //帧间隔心跳
         deltaUpdate() {
             let bool = this._curStatus == MAP_STATUS.PLAY_STATUS_BET || this._curStatus == MAP_STATUS.PLAY_STATUS_SHOW_INFO;
-            if (!bool) return;
+            if (!bool) {
+                this._viewUI.box_time.visible = false;
+                return;
+            }
             let curTime = this._game.sync.serverTimeBys;
             let time = Math.floor(this._countDown - curTime);
             this._viewUI.box_time.ani1.gotoAndStop(24);
@@ -1046,7 +1049,7 @@ module gamebaijiale.page {
                 case MAP_STATUS.PLAY_STATUS_SHOW_INFO:// 展示阶段
                     this._viewUI.txt_status.index = 6;
                     this.flyChipEffect();
-                    Laya.timer.once(2200, this, () => {
+                    Laya.timer.once(2500, this, () => {
                         this.showMainReusult();
                     });
                     break;
