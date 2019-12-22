@@ -120,7 +120,6 @@ module gamebaijiale.page {
                 }
                 this.onUpdateMapInfo();
             }
-            this._viewUI.box_left.left = this._game.isFullScreen ? 25 : 5;
             this._viewUI.mouseThrough = true;
             this._game.playMusic(Path_game_baijiale.music_baijiale + "bjl_bgm.mp3");
         }
@@ -148,6 +147,8 @@ module gamebaijiale.page {
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_UNIT_ACTION, this, this.onUpdateUnit);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_MAPINFO_CHANGE, this, this.onUpdateMapInfo);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_UNIT_QIFU_TIME_CHANGE, this, this.onUpdateUnit);
+            this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_MAIN_UNIT_CHANGE, this, this.onUpdateChipGrey);
+
             this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_STATUS_CHECK, this, this.onUpdateStatus);
             this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_BATTLE_CHECK, this, this.onUpdateBattle);
             this._game.sceneObjectMgr.on(BaijialeMapInfo.EVENT_GAME_TURN_CHANGE, this, this.onUpdateTurn);//回合数变化
@@ -164,6 +165,24 @@ module gamebaijiale.page {
 
             this.onUpdateUnitOffline();
             this.onUpdateSeatedList();
+        }
+
+        protected layout(): void {
+            super.layout();
+            if (this._viewUI) {
+                //全面屏
+                if (this._game.isFullScreen) {
+                    this._viewUI.box_top_left.left = 14 + 56;
+                    this._viewUI.box_room_left.left = 105 + 56;
+                    this._viewUI.box_top_right.right = 28 + 56;
+                    this._viewUI.box_bottom_right.right = 12 + 56;
+                } else {
+                    this._viewUI.box_top_left.left = 14;
+                    this._viewUI.box_room_left.left = 105;
+                    this._viewUI.box_top_right.right = 28;
+                    this._viewUI.box_bottom_right.right = 12;
+                }
+            }
         }
 
         private _curDiffTime: number;
@@ -267,18 +286,6 @@ module gamebaijiale.page {
                     this.addMoneyClip(info[0], info[1]);
                 }
             }
-            if (this._mainResult == 0) {
-                this._viewUI.effWin_xian.visible = true;
-                this._viewUI.effWin_xian.ani1.play(0, false);
-
-            } else if (this._mainResult == 1) {
-                this._viewUI.effWin_zhuang.visible = true;
-                this._viewUI.effWin_zhuang.ani1.play(0, false);
-            }
-            else if (this._mainResult == 2) {
-                this._viewUI.effWin_he.visible = true;
-                this._viewUI.effWin_he.ani1.play(0, false);
-            }
         }
 
         private _mainResult: number = -1;
@@ -311,20 +318,26 @@ module gamebaijiale.page {
                 this._viewUI.effWin_xian.img_result.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_xy.png"
                 this._viewUI.effWin_xian.img_result1.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_xy.png"
                 Laya.timer.once(timeSpace + 500, this, () => {
+                    this._viewUI.effWin_xian.visible = true;
+                    this._viewUI.effWin_xian.ani1.play(0, false);
                     this._game.playSound(Path_game_baijiale.music_baijiale + "win_xian.mp3", false);
                 })
                 resultArr.push(0)
             } else if (xianCount < zhuangCount) {
                 this._mainResult = 1;
-                this._viewUI.effWin_xian.img_result.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_zy.png"
-                this._viewUI.effWin_xian.img_result1.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_zy.png"
+                this._viewUI.effWin_zhuang.img_result.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_zy.png"
+                this._viewUI.effWin_zhuang.img_result1.skin = "baijiale_ui/game_ui/baijiale/effect/zy/tu_zy.png"
                 Laya.timer.once(timeSpace + 500, this, () => {
+                    this._viewUI.effWin_zhuang.visible = true;
+                    this._viewUI.effWin_zhuang.ani1.play(0, false);
                     this._game.playSound(Path_game_baijiale.music_baijiale + "win_zhuang.mp3", false);
                 });
                 resultArr.push(1)
             } else {
                 this._mainResult = 2;
                 Laya.timer.once(timeSpace + 500, this, () => {
+                    this._viewUI.effWin_he.visible = true;
+                    this._viewUI.effWin_he.ani1.play(0, false);
                     this._game.playSound(Path_game_baijiale.music_baijiale + "he.mp3", false);
                 })
                 resultArr.push(2)
@@ -378,15 +391,13 @@ module gamebaijiale.page {
             }
         }
 
-        private onUpdateChipGrey(isBetState: boolean) {
+        private onUpdateChipGrey() {
             if (!this._game.sceneObjectMgr.mainUnit) return;
-            if (!isBetState) return;
             let money: number = this._game.sceneObjectMgr.mainUnit.GetMoney();
             for (let i = 0; i < this._chipUIList.length; i++) {
                 let index = this._chipUIList.length - 1 - i;
                 if (money < this._chipArr[index]) {
                     this._chipUIList[index].disabled = true;
-                    this._chipUIList[index].y = this._curChipY;
                 } else {
                     this._chipUIList[index].disabled = false;
                 }
@@ -1049,7 +1060,7 @@ module gamebaijiale.page {
                 case MAP_STATUS.PLAY_STATUS_SHOW_INFO:// 展示阶段
                     this._viewUI.txt_status.index = 6;
                     this.flyChipEffect();
-                    Laya.timer.once(2500, this, () => {
+                    Laya.timer.once(2800, this, () => {
                         this.showMainReusult();
                     });
                     break;
@@ -1256,13 +1267,15 @@ module gamebaijiale.page {
 
         //筹码是否置灰（是否下注阶段）
         private onChipDisabled(isBetState: boolean): void {
-            this.onUpdateChipGrey(isBetState);
+            this.onUpdateChipGrey();
             this._viewUI.btn_repeat.disabled = !isBetState;
             if (isBetState) {
                 let index = this._chipArr.indexOf(this._curChip);
                 for (let i: number = 0; i < this._chipUIList.length; i++) {
                     Laya.Tween.to(this._chipUIList[i], { y: i == index ? this._curChipY - 10 : this._curChipY }, 300);
                     this._chipUIList[i].img0.visible = this._chipUIList[i].img1.visible = i == index;
+                    !this._chipUIList[i].disabled && (this._chipUIList[i].mouseEnabled = true);
+                    this._chipUIList[i].alpha = 1;
                     if (i == index) {
                         this._chipUIList[i].ani1.play(0, true);
                     } else {
@@ -1271,8 +1284,9 @@ module gamebaijiale.page {
                 }
             } else {
                 for (let i: number = 0; i < this._chipUIList.length; i++) {
-                    Laya.Tween.to(this._chipUIList[i], { y: this._curChipY + 10 }, 300);
-                    this._chipUIList[i].disabled = true;
+                    Laya.Tween.to(this._chipUIList[i], { y: this._curChipY + 20 }, 300);
+                    !this._chipUIList[i].disabled && (this._chipUIList[i].mouseEnabled = false);
+                    this._chipUIList[i].alpha = 0.75;
                     this._chipUIList[i].ani1.gotoAndStop(0);
                     this._chipUIList[i].img0.visible = this._chipUIList[i].img1.visible = false;
                 }
@@ -1595,6 +1609,7 @@ module gamebaijiale.page {
                 this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_UNIT_ACTION, this, this.onUpdateUnit);
                 this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_MAPINFO_CHANGE, this, this.onUpdateMapInfo);
                 this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_UNIT_QIFU_TIME_CHANGE, this, this.onUpdateUnit);
+                this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_MAIN_UNIT_CHANGE, this, this.onUpdateChipGrey);
 
                 this._game.sceneObjectMgr.off(BaijialeMapInfo.EVENT_STATUS_CHECK, this, this.onUpdateStatus);
                 this._game.sceneObjectMgr.off(BaijialeMapInfo.EVENT_BATTLE_CHECK, this, this.onUpdateBattle);

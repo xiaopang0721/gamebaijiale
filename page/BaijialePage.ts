@@ -197,7 +197,7 @@ module gamebaijiale.page {
 				this._gridEditor = new GridEditor(19, 16.5, 30, 6, this._textureTypes, false);
 				this.box_grid.addChild(this._gridEditor);
 			}
-			this.txt_max.text = '投注限额：' + this._max;
+			this.txt_max.text = this._max.toString();
 			this._gridEditor.x = 1;
 			this._gridEditor.y = 0;
 			this.img_bg.skin = PathGameTongyong.ui_tongyong + 'hud/difen_2_' + this.index + '.png';
