@@ -36,6 +36,7 @@ module gamebaijiale.page {
 				DatingPath.atlas_dating_ui + "qifu.atlas",
                 Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
                 Path_game_baijiale.atlas_game_ui_baijiale_effect + "zy.atlas",
+				Path_game_baijiale.ui_baijiale_effect_sk + "baijiale.png",
 				PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",

@@ -10,6 +10,7 @@ module gamebaijiale.page {
 		private _player: any;
 		private _playerInfo: any;
 		private _baijialeHudMgr: BaijialeHudMgr;
+		private _avatar: AvatarUIShow;
 
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);
@@ -22,6 +23,7 @@ module gamebaijiale.page {
 				PathGameTongyong.atlas_game_ui_tongyong + "logo.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong_general + "anniu.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong_general_effect + "anniug.atlas",
+				Path_game_baijiale.ui_baijiale_effect_sk + "baijiale.png",
 			];
 			this._isNeedDuang = false;
 		}
@@ -43,6 +45,12 @@ module gamebaijiale.page {
 		protected onOpen(): void {
 			super.onOpen();
 			(this._viewUI.view as TongyongHudPage).onOpen(this._game, BaijialePageDef.GAME_NAME);
+
+			if (!this._avatar) {
+				this._avatar = new AvatarUIShow();
+				this._viewUI.box_sk.addChild(this._avatar);
+			}
+			this._avatar.loadSkeleton(Path_game_baijiale.ui_baijiale_effect_sk + "baijiale", 214, 365);
 
 			let datas = [];
 			for (let i = 0; i < BaijialePage.BET_MAX.length; i++) {
@@ -66,6 +74,11 @@ module gamebaijiale.page {
 					this._baijialeHudMgr.clear();
 					this._baijialeHudMgr = null;
 				}
+				if (this._avatar) {
+					this._avatar.clear();
+					this._avatar.destroy();
+					this._avatar = null;
+				}
 				this._game.stopMusic();
 				Laya.Tween.clearAll(this);
 			}
@@ -80,6 +93,9 @@ module gamebaijiale.page {
 
 		//帧心跳
 		update(diff: number) {
+			if (this._avatar) {
+				this._avatar.onDraw();
+			}
 			if (this._baijialeHudMgr) {
 				this._baijialeHudMgr.update(diff);
 			}
