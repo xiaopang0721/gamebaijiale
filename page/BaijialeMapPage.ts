@@ -23,11 +23,11 @@ module gamebaijiale.page {
         "143": [50, 100, 500, 1000, 5000],  //老板
         "144": [100, 500, 1000, 5000, 10000],  //富豪
     };
-    const ROBOT_NUM_CONFIG = {
-        "141": [100, 150, 200, 300],     //新手
-        "142": [70, 100, 130, 200],   //小资
-        "143": [30, 60, 100, 150],  //老板
-        "144": [10, 30, 60, 90],  //富豪
+    const ONLINE_NUM_RATE_CONFIG = {
+        "141": 0.6,     //新手
+        "142": 0.5,   //小资
+        "143": 0.4,  //老板
+        "144": 0.35,  //富豪
     };
     export class BaijialeMapPage extends game.gui.base.Page {
         static readonly MONEY_LIMIT_CONFIG = {
@@ -52,10 +52,10 @@ module gamebaijiale.page {
         private _chipUIList: Array<ui.ajqp.game_ui.tongyong.effect.Effect_cmUI> = [];//筹码UI集合
         private _aniKaiList: Array<any> = [];//开牌ani集合
         private _chipArr: Array<number> = [];//筹码大小类型
+        private _onlineNumRate: number = 1;//在线人数比例
         private _cardsArr: Array<any> = [];//开牌信息集合
         private _clipList: Array<BaijialeClip> = [];//飘字集合
         private _imgdiList: Array<LImage> = [];//飘字底集合
-        private _robotConfig: any;//机器人配置
         private _szlimit: number;//上庄金币
         private _seatlimit: number;//入座金币
         private _betlimit: number;//投注限额
@@ -573,19 +573,17 @@ module gamebaijiale.page {
         }
 
         private updateOnline(): void {
-            if (!this._robotConfig) return;
-            let onlineNum = 0;
+            let unitNum = 0;
             for (let key in this._game.sceneObjectMgr.unitDic) {
                 if (this._game.sceneObjectMgr.unitDic.hasOwnProperty(key)) {
                     let unit = this._game.sceneObjectMgr.unitDic[key];
                     if (unit) {
-                        onlineNum++;
+                        unitNum++;
                     }
                 }
             }
-            let curHour = Sync.getHours(this._game.sync.serverTimeBys * 1000);//当前几点钟
-            let index = curHour >= 1 && curHour < 7 ? 0 : curHour >= 7 && curHour < 13 ? 1 : curHour >= 13 && curHour < 19 ? 2 : 3;
-            let innerHtml = StringU.substitute("在线<span style='color:#18ff00'>{0}</span>人", onlineNum + this._robotConfig[index]);
+            let onlineNum = Math.floor(this._game.datingGame.OnlineNumMgr.getOnlineNum(this._baijialeMapInfo.GetMapID()) * this._onlineNumRate);
+            let innerHtml = StringU.substitute("在线<span style='color:#18ff00'>{0}</span>人", unitNum + onlineNum);
             this._htmlText.innerHTML = innerHtml;
         }
 
@@ -904,7 +902,7 @@ module gamebaijiale.page {
             playerIcon.img_di.visible = false;
             //飘字
             clip_money.setText(Math.abs(value), true, false, preSkin);
-            clip_money.centerX = playerIcon.clip_money.centerX;
+            clip_money.centerX = playerIcon.clip_money.centerX - 4;
             clip_money.centerY = playerIcon.clip_money.centerY;
             playerIcon.clip_money.parent.addChild(clip_money);
             this._clipList.push(clip_money);
@@ -913,7 +911,7 @@ module gamebaijiale.page {
             playerIcon.box_clip.y = 57;
             playerIcon.box_clip.visible = true;
             Laya.Tween.clearAll(playerIcon.box_clip);
-            Laya.Tween.to(playerIcon.box_clip, { y: playerIcon.box_clip.y - 50 }, 1000);
+            Laya.Tween.to(playerIcon.box_clip, { y: playerIcon.box_clip.y - 55 }, 700);
             //赢钱动画
             playerIcon.effWin.visible = value > 0;
             value > 0 && playerIcon.effWin.ani1.play(0, false);
@@ -956,6 +954,7 @@ module gamebaijiale.page {
                     this.resetAll();
                     break;
                 case MAP_STATUS.PLAY_STATUS_GAMESTART:// 游戏开始
+                    this.updateOnline();
                     this.resetAll();
                     this._viewUI.txt_status.index = 0;
                     if (this._baijialeMapInfo.GetRound() == 1) {
@@ -1245,14 +1244,23 @@ module gamebaijiale.page {
 
         //选择筹码
         private onSelectChip(index: number): void {
-            this._curChip = this._chipArr[index];
-            for (let i: number = 0; i < this._chipUIList.length; i++) {
-                this._chipUIList[i].y = i == index ? this._curChipY - 10 : this._curChipY;
-                this._chipUIList[i].img0.visible = this._chipUIList[i].img1.visible = i == index;
-                if (i == index) {
-                    this._chipUIList[i].ani1.play(0, true);
-                } else {
+            if (this._game.sceneObjectMgr.mainUnit && this._game.sceneObjectMgr.mainUnit.GetMoney() < this._chipArr[0]) {
+                this._curChip = -1;
+                for (let i: number = 0; i < this._chipUIList.length; i++) {
+                    this._chipUIList[i].y = this._curChipY;
+                    this._chipUIList[i].img0.visible = this._chipUIList[i].img1.visible = false;
                     this._chipUIList[i].ani1.gotoAndStop(0);
+                }
+            } else {
+                this._curChip = this._chipArr[index];
+                for (let i: number = 0; i < this._chipUIList.length; i++) {
+                    this._chipUIList[i].y = i == index ? this._curChipY - 10 : this._curChipY;
+                    this._chipUIList[i].img0.visible = this._chipUIList[i].img1.visible = i == index;
+                    if (i == index) {
+                        this._chipUIList[i].ani1.play(0, true);
+                    } else {
+                        this._chipUIList[i].ani1.gotoAndStop(0);
+                    }
                 }
             }
         }
@@ -1261,6 +1269,9 @@ module gamebaijiale.page {
         private onChipDisabled(isBetState: boolean): void {
             this._viewUI.btn_repeat.disabled = !isBetState;
             if (isBetState) {
+                if (this._curChip == -1 && this._game.sceneObjectMgr.mainUnit.GetMoney() >= this._chipArr[0]) {
+                    this._curChip = this._chipArr[0];
+                }
                 Laya.Tween.to(this._viewUI.btn_repeat, { y: this._btnRepeatY }, 300);
                 let index = this._chipArr.indexOf(this._curChip);
                 for (let i: number = 0; i < this._chipUIList.length; i++) {
@@ -1516,13 +1527,9 @@ module gamebaijiale.page {
             let maplv = this._baijialeMapInfo.GetMapLevel();
             if (maplv && ALL_GAME_ROOM_CONFIG_ID.indexOf(maplv) != -1) {
                 this._chipArr = ROOM_CHIP_CONFIG[maplv];
-                this._robotConfig = ROBOT_NUM_CONFIG[maplv];
+                this._onlineNumRate = ONLINE_NUM_RATE_CONFIG[maplv];
                 this._seatlimit = BaijialeMapPage.MONEY_LIMIT_CONFIG[maplv][1];
                 this._betlimit = BaijialeMapPage.MONEY_LIMIT_CONFIG[maplv][2];
-
-                if (this._robotConfig) {
-                    this.updateOnline();
-                }
                 if (!this._chipArr) return;
                 for (let i = 0; i < this._chipArr.length; i++) {
                     this._chipUIList[i].btn_num.label = EnumToString.sampleChipNum(this._chipArr[i]);
