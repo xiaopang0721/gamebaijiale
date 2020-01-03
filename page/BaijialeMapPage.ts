@@ -1219,7 +1219,7 @@ module gamebaijiale.page {
                 }, true, TongyongPageDef.TIPS_SKIN_STR['cz']);
                 return;
             }
-            if (!this._curChip || this._curChip > money) {
+            if (!this._curChip || this._curChip > money || this._curChip == -1) {
                 TongyongPageDef.ins.alertRecharge("老板，您的金币不足哦~\n补充点金币去大杀四方吧~", () => {
                     this._game.uiRoot.general.open(DatingPageDef.PAGE_CHONGZHI);
                 }, () => {
