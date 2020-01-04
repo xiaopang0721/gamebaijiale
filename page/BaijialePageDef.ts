@@ -46,6 +46,7 @@ module gamebaijiale.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "nyl.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong + "yq.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/suiji.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
@@ -54,7 +55,7 @@ module gamebaijiale.page {
 				PathGameTongyong.atlas_game_ui_tongyong_general_effect + "anniug.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong_general_effect + "ksyx.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong_general_effect + "ksxz.atlas",
-
+				
 				Path.custom_atlas_scene + 'card.atlas',
 				Path.custom_atlas_scene + 'chip.atlas',
 				PathGameTongyong.ui_tongyong_sk + "HeGuan.sk",
