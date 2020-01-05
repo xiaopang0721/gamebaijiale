@@ -84,7 +84,6 @@ module gamebaijiale.page {
             this._isNeedDuang = false;
             this._delta = 1000;
             this._asset = [
-                DatingPath.atlas_dating_ui + "qifu.atlas",
                 PathGameTongyong.ui_tongyong_sk + "HeGuan.png",
                 Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
                 Path_game_baijiale.atlas_game_ui_baijiale_effect + "zy.atlas",

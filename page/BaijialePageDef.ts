@@ -33,7 +33,6 @@ module gamebaijiale.page {
 			PageDef._pageClassMap[BaijialePageDef.PAGE_BAIJIALE_RESULT] = BaijialeResultPage;
 
 			this["__needLoadAsset"] = [
-				DatingPath.atlas_dating_ui + "qifu.atlas",
                 Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
                 Path_game_baijiale.atlas_game_ui_baijiale_effect + "zy.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
