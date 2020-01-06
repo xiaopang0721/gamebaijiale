@@ -14,6 +14,7 @@ module gamebaijiale.page {
 			this._isClickBlack = true;
 			this._isNeedDuang = false;
 			this._asset = [
+				PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
 				Path_game_baijiale.atlas_game_ui + "baijiale.atlas",
 			];
